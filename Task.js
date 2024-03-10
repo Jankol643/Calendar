@@ -33,18 +33,25 @@ export default class Task {
         this.prio = prio;
     }
 
+    /**
+     * Creates task from a specified line
+     * @param {string|Array} line - line with task information
+     * @param {int} i - task number
+     * @returns {Task} t - created task
+     */
     createTask(line, i) {
-        /* implementation here */
-        line = line.split(',');
+        if(typeof(line) === String) line = line.split(',');
         if (line[0] = 'r') {
             if (utils.isNullOrNaN(line)) error = 1;
-        else {
-            //simple task
-            if(utils.isNullOrNaN(line, 4, 8)) error = 1;
+            else {
+                //simple task
+                if (utils.isNullOrNaN(line, 4, 8)) error = 1;
+            }
         }
-        }
-        t = new Task();
         if (error = 1) throw new Error('recurring task' + i + ' not completely filled.');
+        t = new Task();
+        //save task in DB
+        return t;
     }
 
     updateTask() {
@@ -55,6 +62,48 @@ export default class Task {
     }
     findBy(searchCriteria, searchTerm) {
         /* implementation here */
+    }
+
+    /**
+     * Returns all tasks in the DB
+     * @returns {Array} tasks - all tasks currently saved in the DB
+     */
+    fetchAll() {
+
+    }
+
+    /**
+     * Fetches all tasks with a due date in the specified date range
+     * @param {Date} startDate - start date to check
+     * @param {*} endDate - start date to check
+     * @returns {Array} taskList - array with found tasks
+     */
+    listTasksByDate(startDate, endDate) {
+        db = DB.getConnection();
+        len = db.tasks.length;
+        taskList = new Array(len);
+        for (i = 0; i < len; i++) {
+            current = db.getNextTask();
+            if (current.due_date >= startDate && current.due_date <= endDate)
+                taskList[len] = current;
+        }
+        return taskList;
+    }
+
+    /**
+     * Generates a series of recurring tasks until the target date
+     * @param {Date} targetDate - last occurence of recurring task
+     */
+    generateTasksUntilDate(targetDate) {
+
+    }
+    
+    /**
+     * Generates a series of tasks with the specified number of items
+     * @param {int} frequency - number of tasks
+     */
+    generateTasksUntilFreq(frequency) {
+
     }
 
 }
