@@ -45,4 +45,19 @@ export default class Util {
         return false;
     }
 
+    /**
+     * Checks if a line is complete
+     * @param {string} line - line to check
+     * @returns bool - true if line is complete
+     */
+    isLineComplete(line) {
+        splitted = line.split(',');
+        if (splitted.length != 8) return false;
+        if (splitted[0] = 1) {
+            if (this.isNullOrUndefined(splitted, 1, 1) = false) return false;
+            if (this.isNullOrUndefined(splitted, 3, 7) = false) return false;
+            return true;
+        }
+    }
+
 }
