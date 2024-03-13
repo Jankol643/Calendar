@@ -24,4 +24,8 @@ export default class Calendar {
         }
     }
 
+    showDeleteSelect(arr) {
+        
+    }
+
 }
