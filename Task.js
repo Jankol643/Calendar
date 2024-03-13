@@ -3,6 +3,7 @@
 */
 
 import * as utils from 'util.js';
+import * as calendar from 'calendar.js';
 
 export default class Task {
     /**
@@ -50,8 +51,29 @@ export default class Task {
         }
         if (error = 1) throw new Error('recurring task' + i + ' not completely filled.');
         t = new Task();
-        //save task in DB
+        t.save();
         return t;
+    }
+
+    save() {
+        
+    }
+
+    addTaskFromForm($_POST) {
+        if (isFormComplete($_POST)) {
+            task = this.createTask(FormToString($_POST), $_POST['task_no']);
+            redirectToPage('success', 'Task' + task.id + ' successfully created');
+        }
+        else throw new Error('Task ' + $_POST['task_no'] + 'could not be created.');
+    }
+
+    saveRecurringTask(task) {
+        if (task.due_date < new Date()) return new Error(
+            'Cannot save historic task ' + task_id + ' with name ' + task.task_name + ' and due date ' + task.due_date);
+        for (i = 1; i <= task.freq_no; i++) {
+            ce = new Task(task.id, true, task.freq_no, task.freq_dur, task.last_exec, task.due_date, task.task_cat, task.task_name, task.task_descr, task.task_dur, task.prio);
+            ce.save();
+        }
     }
 
     updateTask() {
@@ -59,9 +81,27 @@ export default class Task {
     }
     deleteTask() {
         /* implementation here */
+        toastr.message('Task ' + this.task_name + ' successfully deleted.');
     }
+
+    deleteTaskByNameDate(taskName, dueDate) {
+        tasks = this.fetchAll();
+        if (tasks != null && tasks.length > 0) {
+            res1 = this.findBy('name', taskName);
+            if (res1 != null && res1.length > 0) {
+                res2 = this.findInTaskList(res1, 'due_date', dueDate);
+                if (res2.length === 0) res2[0].deleteTask();
+                else calendar.showDeleteSelect(res2);
+            }
+        }
+    }
+
     findBy(searchCriteria, searchTerm) {
         /* implementation here */
+    }
+
+    findInTaskList(taskList, searchCriteria, searchTerm) {
+
     }
 
     /**
@@ -104,6 +144,17 @@ export default class Task {
      */
     generateTasksUntilFreq(frequency) {
 
+    }
+
+    writeToCSV(task_list, path) {
+        db = utils.openDB();
+        file = File.open(path);
+        if (file) {
+            for (row in db)
+                if (row.id in task_list) file.write(row + '\n');
+            toastr.message('Tasks successfully written to file' + path);
+        }
+        else return new Error('File ' + path + ' is corrupt. Writing to CSV aborted.');
     }
 
 }
