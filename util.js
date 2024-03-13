@@ -83,4 +83,11 @@ export default class Util {
       console.log(addMonths(new Date(2016,11,31),2).toString());
     }
 
+    openDB() {
+        connectStr = File.read('settings.json');
+        db = DB.open(connectStr);
+        if (db) return db;
+        else return new Error('Connection error: ' + Error.message);
+    }
+
 }
