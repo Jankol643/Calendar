@@ -37,10 +37,10 @@ export default class Util {
      * @param {*} to - upper limit to check - length of array if omitted
      */
     isNullOrUndefined(arr, from = 0, to) {
-        if (arr === (null || undefined)) return true;
+        if (!arr) return true;
         if (to === undefined) to = arr.length;
-        for (i = from; i <= to; i++) {
-            if (arr(i) === (null || undefined)) return true;
+        for (let i = from; i <= to; i++) {
+            if (!arr[i]) return true;
         }
         return false;
     }
@@ -60,34 +60,18 @@ export default class Util {
         }
     }
 
-    //https://stackoverflow.com/a/12793246+
-    //TODO: correct using comments
+    /**
+     * Adds a specific number of months to a date
+     * @param {Date} date - date to add months to
+     * @param {*} months - number of months to add
+     * @returns date - date with months added
+     */
     addMonths(date, months) {
         let d = date.getDate();
-        date.setMonth(date.getMonth() + +months);
-        if (date.getDate() != d) {
+        date.setMonth(date.getMonth() + Number(months));
+        if (date.getDate() != d)
           date.setDate(0);
-        }
         return date;
-      
-      // Add 12 months to 29 Feb 2016 -> 28 Feb 2017
-      console.log(addMonths(new Date(2016,1,29),12).toString());
-      
-      // Subtract 1 month from 1 Jan 2017 -> 1 Dec 2016
-      console.log(addMonths(new Date(2017,0,1),-1).toString());
-      
-      // Subtract 2 months from 31 Jan 2017 -> 30 Nov 2016
-      console.log(addMonths(new Date(2017,0,31),-2).toString());
-      
-      // Add 2 months to 31 Dec 2016 -> 28 Feb 2017
-      console.log(addMonths(new Date(2016,11,31),2).toString());
-    }
-
-    openDB() {
-        connectStr = File.read('settings.json');
-        db = DB.open(connectStr);
-        if (db) return db;
-        else return new Error('Connection error: ' + Error.message);
     }
 
     /**
@@ -100,33 +84,23 @@ export default class Util {
      * @returns true if color contrast conforms with the given standard
      */
     checkColorContrast(color1, color2, type, fontSize, standard) {
-        con = this.calculateColorContrast(color1, color2);
-        res = 0;
-        if (type = 'text') {
-            if (standard = 'AA') {
-                if (fontSize < 14) {
-                    if (con > 4.5) res = 1;
-                }
-                else {
-                    if (con > 3) res = 1;
-                }
-            } else {
-                //standard = 'AAA'
-                if (fontSize < 14) {
-                    if (con > 7) res = 1;
-                }
-                else {
-                    if (con > 4.5) res = 1;
-                }
+        const con = this.calculateColorContrast(color1, color2);
+        let res = 0;
+    
+        if (type === 'text') {
+            if ((standard === 'AA' && fontSize < 14 && con > 4.5) || 
+                (standard === 'AA' && fontSize >= 14 && con > 3) || 
+                (standard === 'AAA' && fontSize < 14 && con > 7) || 
+                (standard === 'AAA' && fontSize >= 14 && con > 4.5)) {
+                res = 1;
+            }
+        } else {
+            if (con > 3) {
+                //graphics and user interface components
+                res = 1;
             }
         }
-        else {
-            //graphics and user interface components
-            if (con > 3) res = 1;
-        }
-
-        if (res == 1) return true;
-        return false;
+        return res === 1;
     }
 
     /**
@@ -136,24 +110,15 @@ export default class Util {
      * @returns contrast of the two colors as decimal number
      */
     calculateColorContrast(color1, color2) {
-        contrast = 1;
-        if(typeof(color1) === String || typeof(color2) === String) {
-            color1 = this.hexToRGB(color1);
-            color2 = this.hexToRGB(color2);
-            let color1 = color1.map(function(e) { 
-                e= e / 255;
-                return e;
-              });
-            let color2 = color2.map(function(e) { 
-                e= e / 255;
-                return e;
-              });
+        let contrast = 1;
+        if(typeof(color1) === 'string' || typeof(color2) === 'string') {
+            color1 = this.hexToRGB(color1).map(e => e / 255);
+            color2 = this.hexToRGB(color2).map(e => e / 255);
             relLumCol1 = this.calculateRelLuminance(color1);
             relLumCol2 = this.calculateRelLuminance(color2);
             contrast = (relLumCol1 + 0.05) / (relLumCol2 + 0.05);
-            return contrast;
         } 
-        
+        return contrast;
     }
 
     /**
@@ -167,9 +132,8 @@ export default class Util {
         const values = [value1, value2, value3];
         let result = '#';
         for (let i = 0; i < 3; i += 1) {
-            // validation input
+            // input validation
             if (values[i] < 0 || values[i] > 255) throw new Error('An each value of RGB format must be ranges from 0 to 255');
-
             // append to result values as hex with at least width 2
             result += (('0' + values[i].toString(16)).slice(-2));
         }
@@ -179,13 +143,13 @@ export default class Util {
 
     /**
      * Convert a value from the hex format to RGB and return as an array
-     * @param  {int} value A color`s value in the hex format
+     * @param  {int} value A colors value in the hex format
      * @return {array}     Array values of the RGB format
      */
     hexToRGB(value) {
         let val = value;
         val = (value[0] === '#') ? value.slice(1) : value;
-        if ([3, 6].indexOf(val.length) === -1) throw new Error(`Incorect a value of the hex format: ${value}`);
+        if ([3, 6].indexOf(val.length) === -1) throw new Error(`Incorrect value of hex format: ${value}`);
         if (val.length === 3) val = val.split('').map(item => item.repeat(2)).join('');
         return val.match(/.{2}/g).map(item => parseInt(`0x${item}`, 16));
     };
@@ -194,21 +158,21 @@ export default class Util {
      * Calculates the relative luminance of a color
      * @param {Array[int]} color Array values of the RGB format
      * @param {string} standard standard to check
-     * @returns 
+     * @returns relative luminance
      */
     calculateRelLuminance(color, standard) {
-        relLum = 0;
         colVals = [3];
         thresholdIEC = 0.04045; //correct
         thresholdWCAG = 0.03928; //incorrect, but in WCAG standard
         for (i = 0; i <= 3; i++) {
-            if (standard === 'WCAG') threshold = thresholdWCAG;
-            else threshold = thresholdIEC;
-            if (color[i] <= thresholdWCAG) colVals[i] = color[i] / 12.92;
-            else colVals[i] = Math.pow((color[i] + 0.055) / 1.055, 2.4);
+            const threshold = (standard === 'WCAG') ? thresholdWCAG : thresholdIEC;
+            if (color[i] <= threshold) {
+                colVals[i] = color[i] / 12.92;
+            } else {
+                colVals[i] = Math.pow((color[i] + 0.055) / 1.055, 2.4);
+            }
         }
-        relLum = 0.2126 * R + 0.7152 * G + 0.0722 * B;
-        return relLum;
+        return 0.2126 * colVals[0] + 0.7152 * colVals[1] + 0.0722 * colVals[2];
     }
 
 }
