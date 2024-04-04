@@ -27,46 +27,45 @@ let options = {
 		}
 	}
 };
-let calendar = document.getElementById("calendar").calendar(options); $('.btn-group button[data-calendar-nav]').each(function () {
+let calendar = document.getElementById("calendar").calendar(options);
+document.querySelectorAll('.btn-group button[data-calendar-nav]').forEach(function() {
 	let $this = this;
-	$this.click(function () {
+	$this.onclick = function () {
 		calendar.navigate($this.data('calendar-nav'));
-	});
+	};
 });
 document.querySelectorAll('.btn-group button[data-calendar-view]').each(function () {
 	let $this = this;
-	$this.click(function () {
+	$this.onclick = function () {
 		calendar.view($this.data('calendar-view'));
-	});
+	};
 });
-document.getElementById("first_day").change(function () {
+document.getElementById("first_day").addEventListener("change", function () {
 	let value = this.value;
 	value = value.length ? parseInt(value) : null;
 	calendar.setOptions({ first_day: value });
 	calendar.view();
 });
-document.getElementById("language").change(function () {
+document.getElementById("language").addEventListener("change", function () {
 	calendar.setLanguage(this.value);
 	calendar.view();
 });
-document.getElementById("events-in-modal").change(function () {
-	let val = this.is(':checked') ? this.value : null;
+document.getElementById("events-in-modal").addEventListener("change", function () {
+	let val = document.getElementById("events-in-modal").checked ? this.value : null;
 	calendar.setOptions({ modal: val });
 });
-document.getElementById("format-12-hours").change(function () {
-	let val = this.is(':checked') ? true : false;
+document.getElementById("format-12-hours").addEventListener("change", function () {
+	let val = document.getElementById("format-12-hours").checked;
 	calendar.setOptions({ format12: val });
 	calendar.view();
 });
-document.getElementById("show_wbn").change(function () {
-	let val = this.is(':checked') ? true : false;
+document.getElementById("show_wbn").addEventListener("change", function () {
+	let val = document.getElementById("show_wbn").checked;
 	calendar.setOptions({ display_week_numbers: val });
 	calendar.view();
 });
-document.getElementById("show_wb").change(function () {
-	let val = this.is(':checked') ? true : false;
+document.getElementById("show_wb").addEventListener("change", function () {
+	let val = document.getElementById("show_wb").checked;
 	calendar.setOptions({ weekbox: val });
 	calendar.view();
-});
-document.querySelectorAll('#events-modal .modal-header, #events-modal .modal-footer').click(function (e) {
 });

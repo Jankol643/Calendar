@@ -51,7 +51,7 @@ You will need to include the bootstrap css and calendar css. Here is the minimum
 		<script type="text/javascript" src="js/vendor/underscore-min.js"></script>
 		<script type="text/javascript" src="js/calendar.js"></script>
 		<script type="text/javascript">
-			var calendar = $("#calendar").calendar(
+			let calendar = $("#calendar").calendar(
 				{
 					tmpl_path: "/tmpls/",
 					events_source: function () { return []; }
@@ -73,7 +73,7 @@ Where xx-XX is the language code. When you initializing the calendar, you have t
 ```html
 
 	<script type="text/javascript">
-		var calendar = $('#calendar').calendar({language: 'xx-XX'});
+		let calendar = $('#calendar').calendar({language: 'xx-XX'});
 	</script>
 ```
 
@@ -89,7 +89,7 @@ See [events.json.php](https://github.com/Serhioromano/bootstrap-calendar/blob/ma
 
 ### Feed URL
 
-	var calendar = $('#calendar').calendar({events_source: '/api/events.php'});
+	let calendar = $('#calendar').calendar({events_source: '/api/events.php'});
 
 It will send two parameters by `GET` named `from` and `to`, which will tell you what period is required. You have to return it in JSON structure like this
 
@@ -113,7 +113,7 @@ It will send two parameters by `GET` named `from` and `to`, which will tell you 
 You can set events list array directly to `events_source` parameter.
 ```js
 
-	var calendar = $('#calendar').calendar({
+	let calendar = $('#calendar').calendar({
 	    events_source: [
             {
                 "id": 293,
@@ -133,7 +133,7 @@ Or you can use function. You have to return array of events.
 
 ```js
 
-	var calendar = $('#calendar').calendar({events_source: function(){
+	let calendar = $('#calendar').calendar({events_source: function(){
 	    return  [
            {
                "id": 293,
