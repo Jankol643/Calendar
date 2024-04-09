@@ -1,5 +1,16 @@
 /** Task.js
  * This Task class represents a calendar task with following parameters:
+ * @param {int} id - a unique identifier for the task
+ * @param {boolean} recurr - a boolean indicating whether the task recurs or not
+ * @param {int} freq_no - the frequency duration for recurring tasks
+ * @param {int} freq_dur - how long the task should be executed
+ * @param {Date} last_exec - the last execution date for recurring tasks
+ * @param {Date} due_date - the date when the task is due
+ * @param {string} task_cat - the category of the task
+ * @param {string} task_name - the name of the task
+ * @param {string} task_descr - a description of the task
+ * @param {int} task_dur - the duration of the task
+ * @param {int} prio - the priority of the task
 */
 
 import * as utils from 'util.js';
@@ -7,7 +18,7 @@ import * as calendar from 'calendar.js';
 
 export default class Task {
     /**
-     * 
+     * Initialises a new task
      * @param {int} id - a unique identifier for the task
      * @param {boolean} recurr - a boolean indicating whether the task recurs or not
      * @param {int} freq_no - the frequency duration for recurring tasks
@@ -50,7 +61,7 @@ export default class Task {
             }
         }
         if (error = 1) throw new Error('recurring task' + i + ' not completely filled.');
-        t = new Task();
+        t = new Task(i, int(line[0]), int(line[1]), int(line[3]), Date(line[4]), Date(line[5]), line[6], line[7], line[8], line[9], line[10]);
         t.save();
         return t;
     }
