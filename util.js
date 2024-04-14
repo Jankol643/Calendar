@@ -70,7 +70,7 @@ export default class Util {
         let d = date.getDate();
         date.setMonth(date.getMonth() + Number(months));
         if (date.getDate() != d)
-          date.setDate(0);
+            date.setDate(0);
         return date;
     }
 
@@ -86,11 +86,11 @@ export default class Util {
     checkColorContrast(color1, color2, type, fontSize, standard) {
         const con = this.calculateColorContrast(color1, color2);
         let res = 0;
-    
+
         if (type === 'text') {
-            if ((standard === 'AA' && fontSize < 14 && con > 4.5) || 
-                (standard === 'AA' && fontSize >= 14 && con > 3) || 
-                (standard === 'AAA' && fontSize < 14 && con > 7) || 
+            if ((standard === 'AA' && fontSize < 14 && con > 4.5) ||
+                (standard === 'AA' && fontSize >= 14 && con > 3) ||
+                (standard === 'AAA' && fontSize < 14 && con > 7) ||
                 (standard === 'AAA' && fontSize >= 14 && con > 4.5)) {
                 res = 1;
             }
@@ -111,13 +111,13 @@ export default class Util {
      */
     calculateColorContrast(color1, color2) {
         let contrast = 1;
-        if(typeof(color1) === 'string' || typeof(color2) === 'string') {
+        if (typeof (color1) === 'string' || typeof (color2) === 'string') {
             color1 = this.hexToRGB(color1).map(e => e / 255);
             color2 = this.hexToRGB(color2).map(e => e / 255);
             relLumCol1 = this.calculateRelLuminance(color1);
             relLumCol2 = this.calculateRelLuminance(color2);
             contrast = (relLumCol1 + 0.05) / (relLumCol2 + 0.05);
-        } 
+        }
         return contrast;
     }
 

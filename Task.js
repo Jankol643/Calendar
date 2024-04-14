@@ -52,7 +52,7 @@ export default class Task {
      * @returns {Task} t - created task
      */
     createTask(line, i) {
-        if(typeof(line) === String) line = line.split(',');
+        if (typeof (line) === String) line = line.split(',');
         if (line[0] = 'r') {
             if (utils.isNullOrNaN(line)) error = 1;
             else {
@@ -67,7 +67,7 @@ export default class Task {
     }
 
     save() {
-        
+
     }
 
     addTaskFromForm($_POST) {
@@ -148,7 +148,7 @@ export default class Task {
     generateTasksUntilDate(targetDate) {
 
     }
-    
+
     /**
      * Generates a series of tasks with the specified number of items
      * @param {int} frequency - number of tasks

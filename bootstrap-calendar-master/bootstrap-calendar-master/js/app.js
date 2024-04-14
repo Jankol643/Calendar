@@ -28,7 +28,7 @@ let options = {
 	}
 };
 let calendar = document.getElementById("calendar").calendar(options);
-document.querySelectorAll('.btn-group button[data-calendar-nav]').forEach(function() {
+document.querySelectorAll('.btn-group button[data-calendar-nav]').forEach(function () {
 	let $this = this;
 	$this.onclick = function () {
 		calendar.navigate($this.data('calendar-nav'));
