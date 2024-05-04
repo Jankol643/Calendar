@@ -136,7 +136,7 @@ export default class Task {
         for (i = 0; i < len; i++) {
             current = db.getNextTask();
             if (current.due_date >= startDate && current.due_date <= endDate)
-                taskList[len] = current;
+                taskList[i] = current;
         }
         return taskList;
     }
