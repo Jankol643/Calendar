@@ -3,6 +3,8 @@
  * Main calendar class
  */
 
+import TaskController from 'TaskController.js';
+
 export default class Calendar {
 
     constructor() {
@@ -20,7 +22,7 @@ export default class Calendar {
             tasks.add(line);
         }
         for (i = 0; i < tasks.length; i++) {
-            t = createTask(line, i);
+            t = TaskController.createTask(line, i);
         }
     }
 
@@ -31,7 +33,7 @@ export default class Calendar {
     render() {
         document.addEventListener('DOMContentLoaded', function () {
             let calendarEl = document.getElementById('calendar');
-            let calendar = new FullCalendar.Calendar(calendarEl, {
+            let calendar = new calendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
                 initialDate: '2024-03-07',
                 headerToolbar: {
@@ -43,8 +45,31 @@ export default class Calendar {
             });
             calendar.render();
         });
-        
-        
+    }
+
+    async connectToDB() {
+        const mariadb = require('mariadb');
+        const pool = mariadb.createPool({
+            host: 'localhost',
+            user: 'root',
+            password: '',
+            connectionLimit: 5
+        });
+        try {
+            return await pool.getConnection();
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    async asyncFunction() {
+        con = this.connectToDB();
+        if (con) {
+            const rows = await conn.query("IF OBJECT_ID(N'dbo.Calendar-items', N'U') IS NULL BEGIN   CREATE TABLE dbo.Calendar-items (Name varchar(64) not null)");
+            console.log(rows); //[ {val: 1}, meta: ... ]
+            const res = await conn.query("INSERT INTO myTable value (?, ?)", [1, "mariadb"]);
+            console.log(res); // { affectedRows: 1, insertId: 1, warningStatus: 0 }
+        }
     }
 
 }
