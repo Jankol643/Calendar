@@ -1,9 +1,5 @@
-/**
- * Calendar.js
- * Main calendar class
- */
-
 import TaskController from 'TaskController.js';
+import View from 'views/View.js';
 
 export default class Calendar {
 
@@ -47,29 +43,33 @@ export default class Calendar {
         });
     }
 
-    async connectToDB() {
-        const mariadb = require('mariadb');
-        const pool = mariadb.createPool({
-            host: 'localhost',
-            user: 'root',
-            password: '',
-            connectionLimit: 5
-        });
-        try {
-            return await pool.getConnection();
-        } catch (err) {
-            throw err;
+    removeDarkMode() {
+        darkTheme = 'dark-theme'; // Your class name
+        itemDivs = document.querySelectorAll('.dark-theme');
+        // If dark theme is active, remove class names
+        if(readCookie(darkTheme) === 'true'){
+            itemDivs.forEach(itemDiv => {
+                itemDiv.classList.remove(darkTheme);
+            });
         }
     }
 
-    async asyncFunction() {
-        con = this.connectToDB();
-        if (con) {
-            const rows = await conn.query("IF OBJECT_ID(N'dbo.Calendar-items', N'U') IS NULL BEGIN   CREATE TABLE dbo.Calendar-items (Name varchar(64) not null)");
-            console.log(rows); //[ {val: 1}, meta: ... ]
-            const res = await conn.query("INSERT INTO myTable value (?, ?)", [1, "mariadb"]);
-            console.log(res); // { affectedRows: 1, insertId: 1, warningStatus: 0 }
+    readCookie(name) {
+        const nameEQ = name + "=";
+        const ca = document.cookie.split(';');
+        for(let i=0; i < ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0)===' ') c = c.substring(1,c.length);
+            if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length,c.length);
         }
+        return null;
     }
 
+    setConstants() {
+        let requestCookie = HttpContext.Request.Cookies;
+        let response = HttpContext.Response.Cookies;
+        if (!requestCookie.ContainsKey("dark-theme"))
+            response.Append("dark-theme","false");
+        return View("Home");
+    }
 }
