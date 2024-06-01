@@ -168,4 +168,19 @@ export default class Task {
         else return new Error('File ' + path + ' is corrupt. Writing to CSV aborted.');
     }
 
+    csvToJSON(tasks) {
+        const rows = csv.split('\n');
+        const headers = rows[0].split(',');
+        const jsonData = [];
+        for (let i = 1; i < rows.length; i++) {
+            const values = rows[i].split(',');
+            const obj = {};
+            for (let j = 0; j < headers.length; j++) {
+                obj[headers[j]] = values[j];
+            }
+            jsonData.push(obj);
+        }
+        const json = JSON.stringify(jsonData, null, 2);
+    }
+    
 }
