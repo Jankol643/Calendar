@@ -1,22 +1,21 @@
 {
-  "name": "serhioromano/bootstrap-calendar",
-  "description": "Bootstrap full view calendar.",
+  "name": "jankol643/calendar",
+  "description": "Modified task scheduler",
   "keywords": [
     "bootstrap",
     "calendar"
   ],
-  "homepage": "http://bootstrap-calendar.azurewebsites.net/",
   "authors": [
     {
-      "name": "Sergey Romanov",
-      "email": "serg4172@mail.ru",
+      "name": "jankol643",
+      "email": "61902737+Jankol643@users.noreply.github.com",
       "role": "Developer"
     }
   ],
   "support": {
-    "issues": "https://github.com/Serhioromano/bootstrap-calendar/issues"
+    "issues": "https://github.com/Jankol643/Calendar/issues"
   },
-  "license": "BSD",
+  "license": "MIT",
   "require": {
     "components/jquery": "~1",
     "components/underscore": "~1",
