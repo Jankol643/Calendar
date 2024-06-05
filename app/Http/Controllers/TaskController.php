@@ -1,186 +1,147 @@
-/** Task.js
- * This Task class represents a calendar task with following parameters:
- * @param {int} id - a unique identifier for the task
- * @param {boolean} recurr - a boolean indicating whether the task recurs or not
- * @param {int} freq_no - the frequency duration for recurring tasks
- * @param {int} freq_dur - how long the task should be executed
- * @param {Date} last_exec - the last execution date for recurring tasks
- * @param {Date} due_date - the date when the task is due
- * @param {string} task_cat - the category of the task
- * @param {string} task_name - the name of the task
- * @param {string} task_descr - a description of the task
- * @param {int} task_dur - the duration of the task
- * @param {int} prio - the priority of the task
-*/
+<?php
 
-import * as utils from 'util.js';
-import * as calendar from 'calendar.js';
+namespace App\Http\Controllers;
 
-export default class Task {
+require_once 'Helpers/util.php';
+require_once 'calendar.php';
+
+use App\Http\Controllers\Helpers\Util;
+use \Illuminate\Http\Request;
+use App\Models\Task;
+use DateTime;
+use Exception;
+
+class TaskController
+{
     /**
-     * Initialises a new task
-     * @param {int} id - a unique identifier for the task
-     * @param {boolean} recurr - a boolean indicating whether the task recurs or not
-     * @param {int} freq_no - the frequency duration for recurring tasks
-     * @param {int} freq_dur - how long the task should be executed
-     * @param {Date} last_exec - the last execution date for recurring tasks
-     * @param {Date} due_date - the date when the task is due
-     * @param {string} task_cat - the category of the task
-     * @param {string} task_name - the name of the task
-     * @param {string} task_descr - a description of the task
-     * @param {int} task_dur - the duration of the task
-     * @param {int} prio - the priority of the task
+     * @var int $id - a unique identifier for the task
+     * @var bool $recurr - a boolean indicating whether the task recurs or not
+     * @var int $freq_no - the frequency duration for recurring tasks
+     * @var int $freq_dur - how long the task should be executed
+     * @var DateTime $last_exec - the last execution date for recurring tasks
+     * @var DateTime $due_date - the date when the task is due
+     * @var string $task_cat - the category of the task
+     * @var string $task_name - the name of the task
+     * @var string $task_descr - a description of the task
+     * @var int $task_dur - the duration of the task
+     * @var int $prio - the priority of the task
      */
-    constructor(id, recurr, freq_no, freq_dur, last_exec, due_date, task_cat, task_name, task_descr, task_dur, prio) {
-        this.id = id;
-        this.recurr = recurr;
-        this.freq_no = freq_no;
-        this.freq_dur = freq_dur;
-        this.last_exec = last_exec;
-        this.due_date = due_date;
-        this.task_cat = task_cat;
-        this.task_name = task_name;
-        this.task_descr = task_descr;
-        this.task_dur = task_dur;
-        this.prio = prio;
-    }
+    private $id;
+    private $recurr;
+    private $freq_no;
+    private $freq_dur;
+    private $last_exec;
+    private $due_date;
+    private $task_cat;
+    private $task_name;
+    private $task_descr;
+    private $task_dur;
+    private $prio;
 
     /**
      * Creates task from a specified line
-     * @param {string|Array} line - line with task information
-     * @param {int} i - task number
-     * @returns {Task} t - created task
+     * @param string|array $line - line with task information
+     * @return Task - created task
+     * @throws Exception - if recurring task is not completely filled
      */
-    createTask(line, i) {
-        if (typeof (line) === String) line = line.split(',');
-        if (line[0] = 'r') {
-            if (utils.isNullOrNaN(line)) error = 1;
-            else {
-                //simple task
-                if (utils.isNullOrNaN(line, 4, 8)) error = 1;
+    public static function createTask($line)
+    {
+        try {
+            $line = is_string($line) ? explode(',', $line) : $line;
+
+            if ($line[0] === 'r' && Util::isNullOrUndefined($line, 4, 8)) {
+                return back()->with('error', 'recurring task not completely filled.');
             }
-        }
-        if (error = 1) throw new Error('recurring task' + i + ' not completely filled.');
-        t = new Task(i, int(line[0]), int(line[1]), int(line[3]), Date(line[4]), Date(line[5]), line[6], line[7], line[8], line[9], line[10]);
-        t.save();
-        return t;
-    }
 
-    save() {
-
-    }
-
-    addTaskFromForm($_POST) {
-        if (isFormComplete($_POST)) {
-            task = this.createTask(FormToString($_POST), $_POST['task_no']);
-            redirectToPage('success', 'Task' + task.id + ' successfully created');
-        }
-        else throw new Error('Task ' + $_POST['task_no'] + 'could not be created.');
-    }
-
-    saveRecurringTask(task) {
-        if (task.due_date < new Date()) return new Error(
-            'Cannot save historic task ' + task_id + ' with name ' + task.task_name + ' and due date ' + task.due_date);
-        for (i = 1; i <= task.freq_no; i++) {
-            ce = new Task(task.id, true, task.freq_no, task.freq_dur, task.last_exec, task.due_date, task.task_cat, task.task_name, task.task_descr, task.task_dur, task.prio);
-            ce.save();
+            $t = Task::createTask((int)$line[0], (int)$line[1], (int)$line[3], new DateTime($line[4]), new DateTime($line[5]), $line[6], $line[7], $line[8], $line[9], $line[10]);
+            $t->save();
+            return $t;
+        } catch (Exception $e) {
+            // Handle the exception here
+            // You can log the error, display a user-friendly message, or take any other appropriate action
+            throw $e;
         }
     }
 
-    updateTask() {
+    /**
+     * Saves the task
+     */
+    public function save()
+    {
+        // implementation here
+    }
+
+    /**
+     * Adds a task from a form submission
+     * @param \Illuminate\Http\Request $request - form data
+     * @throws Exception - if task could not be created
+     */
+    public function addTaskFromForm(Request $request)
+    {
+        $validatedData = $request->validate([
+            'task_no' => 'required',
+            // Add validation rules for other form fields here
+        ]);
+
+        try {
+            $task = $this->createTask(Util::FormToString($request));
+            return view('success')->with('message', 'Task ' . $task->id . ' successfully created');
+        } catch (Exception $exception) {
+            $errorMessage = 'Task ' . $request['task_no'] . ' could not be created.';
+            return back()->with('error', $errorMessage)->withInput();
+        }
+    }
+
+    function saveRecurringTask($task)
+    {
+        if ($task->due_date < new DateTime()) {
+            $errorMessage = 'Cannot save historic task ' . $task->id . ' with name ' . $task->task_name . ' and due date ' . $task->due_date;
+            return back()->with('error', $errorMessage)->withInput();
+        }
+        for ($i = 1; $i <= $task->freq_no; $i++) {
+            $ce = new Task($task->id, true, $task->freq_no, $task->freq_dur, $task->last_exec, $task->due_date, $task->task_cat, $task->task_name, $task->task_descr, $task->task_dur, $task->prio);
+            $ce->save();
+        }
+    }
+
+    function generateTasksUntilDate($targetDate)
+    {
         /* implementation here */
     }
-    deleteTask() {
-        /* implementation here */
-        toastr.message('Task ' + this.task_name + ' successfully deleted.');
-    }
 
-    deleteTaskByNameDate(taskName, dueDate) {
-        tasks = this.fetchAll();
-        if (tasks != null && tasks.length > 0) {
-            res1 = this.findBy('name', taskName);
-            if (res1 != null && res1.length > 0) {
-                res2 = this.findInTaskList(res1, 'due_date', dueDate);
-                if (res2.length === 0) res2[0].deleteTask();
-                else calendar.showDeleteSelect(res2);
-            }
-        }
-    }
-
-    findBy(searchCriteria, searchTerm) {
+    function generateTasksUntilFreq($frequency)
+    {
         /* implementation here */
     }
 
-    findInTaskList(taskList, searchCriteria, searchTerm) {
-
-    }
-
-    /**
-     * Returns all tasks in the DB
-     * @returns {Array} tasks - all tasks currently saved in the DB
-     */
-    fetchAll() {
-
-    }
-
-    /**
-     * Fetches all tasks with a due date in the specified date range
-     * @param {Date} startDate - start date to check
-     * @param {*} endDate - start date to check
-     * @returns {Array} taskList - array with found tasks
-     */
-    listTasksByDate(startDate, endDate) {
-        db = DB.getConnection();
-        len = db.tasks.length;
-        taskList = new Array(len);
-        for (i = 0; i < len; i++) {
-            current = db.getNextTask();
-            if (current.due_date >= startDate && current.due_date <= endDate)
-                taskList[i] = current;
-        }
-        return taskList;
-    }
-
-    /**
-     * Generates a series of recurring tasks until the target date
-     * @param {Date} targetDate - last occurence of recurring task
-     */
-    generateTasksUntilDate(targetDate) {
-
-    }
-
-    /**
-     * Generates a series of tasks with the specified number of items
-     * @param {int} frequency - number of tasks
-     */
-    generateTasksUntilFreq(frequency) {
-
-    }
-
-    writeToCSV(task_list, path) {
-        db = utils.openDB();
-        file = File.open(path);
-        if (file) {
-            for (row in db)
-                if (row.id in task_list) file.write(row + '\n');
-            toastr.message('Tasks successfully written to file' + path);
-        }
-        else return new Error('File ' + path + ' is corrupt. Writing to CSV aborted.');
-    }
-
-    csvToJSON(tasks) {
-        const rows = csv.split('\n');
-        const headers = rows[0].split(',');
-        const jsonData = [];
-        for (let i = 1; i < rows.length; i++) {
-            const values = rows[i].split(',');
-            const obj = {};
-            for (let j = 0; j < headers.length; j++) {
-                obj[headers[j]] = values[j];
+    function writeToCSV($taskList, $path)
+    {
+        $taskList = Task::getAllTasks();
+        $file = fopen($path, 'w'); // Open the file in write mode
+        if ($file) {
+            foreach ($taskList as $row) {
+                fwrite($file, $row . "\n"); // Use double quotes to interpret escape sequences like \n
             }
-            jsonData.push(obj);
+            return view('success')->with('message', 'Tasks successfully written to file ' . $path);
+        } else {
+            return view('error')->with('message', 'File ' . $path . ' is corrupt. Writing to CSV aborted.');
         }
-        const json = JSON.stringify(jsonData, null, 2);
+        fclose($file); // Close the file after writing
     }
-    
+
+    function csvToJSON($tasks):string|false
+    {
+        $rows = explode('\n', $tasks);
+        $headers = explode(',', $rows[0]);
+        $jsonData = array();
+        for ($i = 1; $i < count($rows); $i++) {
+            $values = explode(',', $rows[$i]);
+            $obj = array();
+            for ($j = 0; $j < count($headers); $j++) {
+                $obj[$headers[$j]] = $values[$j];
+            }
+            $jsonData[] = $obj;
+        }
+        return json_encode($jsonData, JSON_PRETTY_PRINT);
+    }
 }

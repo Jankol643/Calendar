@@ -1,37 +1,73 @@
-import * as Util from 'Utility/util.js';
+<?php
 
-class Task {
-    constructor() {
+namespace App\Models;
 
+use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
+
+class Task extends Model
+{
+    protected $fillable = [
+        'recurr',
+        'freq_no',
+        'freq_dur',
+        'last_exec',
+        'due_date',
+        'task_cat',
+        'task_name',
+        'task_descr',
+        'task_dur',
+        'prio',
+    ];
+
+    public static function createTask($data)
+    {
+        return self::create($data);
     }
 
-    createTable(tasks) {
-        query = `CREATE TABLE IF NOT EXISTS ` + tasks + `(
-            id INT PRIMARY KEY,
-            recurr BOOLEAN,
-            freq_no INT,
-            freq_dur VARCHAR(255),
-            last_exec DATE,
-            due_date DATE,
-            task_cat VARCHAR(255),
-            task_name VARCHAR(255),
-            task_descr TEXT,
-            task_dur INT,
-            prio INT
-        );`;
+    public static function getTask($id)
+    {
+        return self::findOrFail($id);
     }
+
+    public function updateTask($data)
+    {
+        return $this->update($data);
+    }
+
+    public function deleteTask()
+    {
+        return $this->delete();
+    }
+
+    function deleteTaskByNameDate($taskName, $dueDate):bool
+    {
+        $task = $this->findBy('name', $taskName)
+            ->where('due_date', $dueDate)
+            ->first();
     
-    async asyncFunction() {
-        con = await this.connectToDB();
-        if (con) {
-            const rows = await conn.query("CREATE TABLE IF NOT EXISTS dbo.Calendar-items (Name varchar(64) not null)");
-            console.log(rows); //[ {val: 1}, meta: ... ]
-            const res = await conn.query("INSERT INTO myTable value (?, ?)", [1, "mariadb"]);
-            console.log(res); // { affectedRows: 1, insertId: 1, warningStatus: 0 }
+        if ($task) {
+            return $task->delete();
         }
+        return false;
     }
+
+    function findBy($searchCriteria, $searchTerm)
+    {
+        return $this::where($searchCriteria, 'ilike', '%' . $searchTerm . '%')->get();
+    }
+
+    function listTasksByDate($startDate, $endDate)
+    {
+        $startDate = Carbon::createFromFormat('Y-m-d', $startDate)->startOfDay();
+        $endDate = Carbon::createFromFormat('Y-m-d', $endDate)->endOfDay();
     
-    insert(task) {
-        query = `INSERT INTO tasks (` + Util.toSQLArray(task) + `)`;
+        $taskList = Task::whereBetween('due_date', [$startDate, $endDate])->get();
+        return $taskList;
+    }
+
+    static function getAllTasks()
+    {
+        return Task::all();
     }
 }
