@@ -9,14 +9,10 @@
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css">
 
-  <!-- Custom CSS -->
-  <link rel="stylesheet" href="styles.css">
-
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"></script>
 
-  <!-- Custom JS -->
-  <script src="scripts.js"></script>
+  @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
 <body>
