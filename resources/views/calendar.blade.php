@@ -12,20 +12,49 @@
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"></script>
 
-  @vite(['resources/css/app.css', 'resources/js/app.js'])
+  <link rel="stylesheet" href="{{ asset('css/app.css') }}" type="text/css">
+  <link rel="stylesheet" href="{{ asset('css/calendar.css') }}" type="text/css">
+
+  <script type='importmap'>
+    {
+        "imports": {
+          "@fullcalendar/core": "https://cdn.skypack.dev/@fullcalendar/core@6.1.14",
+          "@fullcalendar/daygrid": "https://cdn.skypack.dev/@fullcalendar/daygrid@6.1.14"
+        }
+      }
+    </script>
 </head>
 
 <body>
   <div class="container-fluid">
     <div class="row">
-      <div>
-        <a href="toggleMode()">
-      </div>
       <!-- Sidebar -->
       <div class="col-md-3 bg-light">
         <!-- Calendar Selector -->
         <div id="calendar-selector">
-          <!-- Add your calendar selector code here -->
+        <div class="layout">
+    <h1>Custom Radio & Checkbox Input</h1>
+    <div class="list-btn">
+      <label class="radio-btn">
+        <input type="radio" checked>
+        <span></span>
+        Radio Input
+      </label>
+
+      <label class="checkbox-btn">
+        <input type="checkbox" checked>
+        <span></span>
+        Checkbox Input
+      </label>
+
+      <label class="switch-btn">
+        <input type="checkbox" checked>
+        <span></span>
+        Switch Button
+      </label>
+      
+    </div>
+</div>
         </div>
       </div>
 
@@ -33,11 +62,12 @@
       <div class="col-md-9">
         <!-- Calendar View -->
         <div id="calendar-view">
-          <!-- Add your calendar view code here -->
+          <div id="calendar"></div>
         </div>
       </div>
     </div>
   </div>
+  <script type="module" src="{{asset('js/app.js')}}"></script>
 </body>
 
 </html>
