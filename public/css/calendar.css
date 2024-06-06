@@ -1,0 +1,113 @@
+
+.list-btn {
+  display: flex;
+}
+
+/* Radio Input */
+.radio-btn span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #ddd;
+    position: relative;
+    transition: 0.3s;
+}
+
+.radio-btn span::before {
+    content: '';
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-color: #fff;
+    transition: 0.6s;
+    transform: scale(0);
+}
+
+.radio-btn input {
+    display: none;
+}
+
+.radio-btn input:checked ~ span {
+    background-color: #02bcf0;
+}
+
+.radio-btn input:checked ~ span::before {
+    transform: scale(1);
+}
+
+/* Checkbox Input */
+.checkbox-btn span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    background-color: #ddd;
+    transition: 0.3s;
+}
+
+.checkbox-btn span::before {
+    content: '';
+    display: inline-block;
+    width: 24px;
+    height: 12px;
+    border-bottom: 3px solid #fff;
+    border-left: 3px solid #fff;
+    transform: scale(0) rotate(-45deg);
+    position: relative;
+    bottom: 4px;
+    transition: 0.6s;
+}
+
+.checkbox-btn input {
+    display: none;
+}
+
+.checkbox-btn input:checked ~ span {
+    background-color: #02bcf0;
+}
+
+.checkbox-btn input:checked ~ span::before {
+    transform: scale(1) rotate(-45deg);
+}
+
+/* Switch Button */
+.switch-btn span {
+    display: flex;
+    align-items: center;
+    width: 80px;
+    height: 44px;
+    border-radius: 30px;
+    background-color: #ddd;
+    transition: 0.3s;
+    padding: 0 3px;
+    position: relative;
+}
+
+.switch-btn span::before {
+    content: '';
+    display: inline-block;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: #fff;
+    position: absolute;
+    left: 5px;
+    transition: 0.6s;
+}
+
+.switch-btn input {
+    display: none;
+}
+
+.switch-btn input:checked ~ span {
+    background-color: #02bcf0;
+}
+
+.switch-btn input:checked ~ span::before {
+    left: 45px;
+}
