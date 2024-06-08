@@ -4,11 +4,21 @@
         "dev": "vite",
         "build": "vite build"
     },
+    "dependencies": {
+        "@fullcalendar/interaction": "^6.1.10"
+    },
     "devDependencies": {
+        "@fullcalendar/core": "^6.1.14",
+        "@fullcalendar/daygrid": "^6.1.14",
+        "@fullcalendar/list": "^6.1.14",
+        "@fullcalendar/timegrid": "^6.1.14",
+        "autoprefixer": "^10.4.19",
         "axios": "^1.1.2",
-        "laravel-vite-plugin": "^0.7.2",
+        "laravel-vite-plugin": "^0.7.8",
         "lodash": "^4.17.19",
-        "postcss": "^8.1.14",
-        "vite": "^4.0.0"
+        "postcss": "^8.4.38",
+        "sass": "^1.77.4",
+        "tailwindcss": "^3.4.4",
+        "vite": "^4.5.3"
     }
 }
