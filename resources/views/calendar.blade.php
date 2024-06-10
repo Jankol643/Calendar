@@ -12,12 +12,17 @@
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"></script>
 
-  @vite(['resources/sass/calendar.scss','resources/css/app.css'])
+  @vite(['resources/sass/calendar.scss','resources/css/app.css', 'resources/css/calendar.css'])
   @vite(['resources/js/app.js'])
   <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
 </head>
 
 <body>
+  <div class="switch">
+    <input class="switch__input" type="checkbox" id="themeSwitch">
+    <label aria-hidden="true" class="switch__label" for="themeSwitch">On</label>
+    <div aria-hidden="true" class="switch__marker"></div>
+  </div>
   <div class="container-fluid">
     <div class="row">
       <!-- Sidebar -->
@@ -52,9 +57,14 @@
 
       <!-- Main Content -->
       <div class="col-md-9">
-        <!-- Calendar View -->
-         <!-- 
-        <div id="calendar-view">
+        <?php
+        switch ($calendar_type) {
+          case "own":
+          default:
+            echo '<div id="calendar"></div>';
+            break;
+          case "template":
+            $template = `<div id="calendar-view">
           <div class="mt-5 w-full p-2 rounded-xl big-calendar">
             <div>
               <div class="grid grid-cols-7 day-row">
@@ -200,9 +210,10 @@
               </div>
             </div>
           </div>
-        </div>
--->
-        <div id="calendar"></div>
+        </div>`;
+            break;
+        }
+        ?>
       </div>
     </div>
   </div>
