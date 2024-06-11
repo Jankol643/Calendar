@@ -63,8 +63,8 @@
           default:
             echo '<div id="calendar"></div>';
             break;
-          case "template":
-            $template = `<div id="calendar-view">
+          case "template": ?>
+        <div id="calendar-view">
           <div class="mt-5 w-full p-2 rounded-xl big-calendar">
             <div>
               <div class="grid grid-cols-7 day-row">
@@ -210,10 +210,9 @@
               </div>
             </div>
           </div>
-        </div>`;
-            break;
-        }
-        ?>
+        </div>;
+        <?php break; ?>
+        <?php } ?>
       </div>
     </div>
   </div>
