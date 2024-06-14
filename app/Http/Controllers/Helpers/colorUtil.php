@@ -3,34 +3,35 @@
 namespace App\Http\Controllers\Helpers;
 
 class colorUtil {
-/**
- * Checks the color contrast of two colors
- * @param {string} color1 - hexadecimal code of color 1
- * @param {string} color2 - hexadecimal code of color 2
- * @param {string} type - type of element to check (text or null meaning graphics or UI components)
- * @param {int} fontSize - font size of text if applicable
- * @param {string} standard - WCAG standard to check against (AA or AAA)
- * @returns bool - true if the color contrast conforms with the given standard
- */
-function checkColorContrast($color1, $color2, $type, $fontSize, $standard) {
-    $contrast = $this->calculateColorContrast($color1, $color2);
-    $result = false;
+    /**
+     * Checks the color contrast of two colors
+     * @param {string} color1 - hexadecimal code of color 1
+     * @param {string} color2 - hexadecimal code of color 2
+     * @param {string} type - type of element to check (text or null meaning graphics or UI components)
+     * @param {int} fontSize - font size of text if applicable
+     * @param {string} standard - WCAG standard to check against (AA or AAA)
+     * @returns bool - true if the color contrast conforms with the given standard
+     */
+    function checkColorContrast($color1, $color2, $type, $fontSize, $standard) {
+        $contrast = $this->calculateColorContrast($color1, $color2);
+        $result = false;
 
-    if ($type === 'text') {
-        if (($standard === 'AA' && $fontSize < 14 && $contrast > 4.5) ||
-            ($standard === 'AA' && $fontSize >= 14 && $contrast > 3) ||
-            ($standard === 'AAA' && $fontSize < 14 && $contrast > 7) ||
-            ($standard === 'AAA' && $fontSize >= 14 && $contrast > 4.5)) {
-            $result = true;
+        if ($type === 'text') {
+            if (($standard === 'AA' && $fontSize < 14 && $contrast > 4.5) ||
+                ($standard === 'AA' && $fontSize >= 14 && $contrast > 3) ||
+                ($standard === 'AAA' && $fontSize < 14 && $contrast > 7) ||
+                ($standard === 'AAA' && $fontSize >= 14 && $contrast > 4.5)
+            ) {
+                $result = true;
+            }
+        } else {
+            if ($contrast > 3) {
+                // graphics and user interface components
+                $result = true;
+            }
         }
-    } else {
-        if ($contrast > 3) {
-            // graphics and user interface components
-            $result = true;
-        }
+        return $result;
     }
-    return $result;
-}
 
     /**
      * Calculates the contrast between two colors

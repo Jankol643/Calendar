@@ -11,8 +11,7 @@ use App\Models\Task;
 use DateTime;
 use Exception;
 
-class TaskController
-{
+class TaskController {
     /**
      * @var int $id - a unique identifier for the task
      * @var bool $recurr - a boolean indicating whether the task recurs or not
@@ -44,8 +43,7 @@ class TaskController
      * @return Task - created task
      * @throws Exception - if recurring task is not completely filled
      */
-    public static function createTask($line)
-    {
+    public static function createTask($line) {
         try {
             $line = is_string($line) ? explode(',', $line) : $line;
 
@@ -66,8 +64,7 @@ class TaskController
     /**
      * Saves the task
      */
-    public function save()
-    {
+    public function save() {
         // implementation here
     }
 
@@ -76,8 +73,7 @@ class TaskController
      * @param \Illuminate\Http\Request $request - form data
      * @throws Exception - if task could not be created
      */
-    public function addTaskFromForm(Request $request)
-    {
+    public function addTaskFromForm(Request $request) {
         $validatedData = $request->validate([
             'task_no' => 'required',
             // Add validation rules for other form fields here
@@ -92,8 +88,7 @@ class TaskController
         }
     }
 
-    function saveRecurringTask($task)
-    {
+    function saveRecurringTask($task) {
         if ($task->due_date < new DateTime()) {
             $errorMessage = 'Cannot save historic task ' . $task->id . ' with name ' . $task->task_name . ' and due date ' . $task->due_date;
             return back()->with('error', $errorMessage)->withInput();
@@ -104,18 +99,15 @@ class TaskController
         }
     }
 
-    function generateTasksUntilDate($targetDate)
-    {
+    function generateTasksUntilDate($targetDate) {
         /* implementation here */
     }
 
-    function generateTasksUntilFreq($frequency)
-    {
+    function generateTasksUntilFreq($frequency) {
         /* implementation here */
     }
 
-    function writeToCSV($taskList, $path)
-    {
+    function writeToCSV($taskList, $path) {
         $taskList = Task::getAllTasks();
         $file = fopen($path, 'w'); // Open the file in write mode
         if ($file) {
@@ -129,8 +121,7 @@ class TaskController
         fclose($file); // Close the file after writing
     }
 
-    function csvToJSON($tasks):string|false
-    {
+    function csvToJSON($tasks): string|false {
         $rows = explode('\n', $tasks);
         $headers = explode(',', $rows[0]);
         $jsonData = array();

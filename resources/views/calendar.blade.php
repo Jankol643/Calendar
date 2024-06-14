@@ -64,154 +64,154 @@
             echo '<div id="calendar"></div>';
             break;
           case "template": ?>
-        <div id="calendar-view">
-          <div class="mt-5 w-full p-2 rounded-xl big-calendar">
-            <div>
-              <div class="grid grid-cols-7 day-row">
-                <div class="big-date" style="background: rgba(90, 163, 255, 0.15);"><span class="big-date-cell">Su</span></div>
-                <div class="big-date"><span class="big-date-cell">Mo</span></div>
-                <div class="big-date"><span class="big-date-cell">Tu</span></div>
-                <div class="big-date"><span class="big-date-cell">We</span></div>
-                <div class="big-date"><span class="big-date-cell">Th</span></div>
-                <div class="big-date"><span class="big-date-cell">Fr</span></div>
-                <div class="big-date" style="background: rgba(255, 77, 77, 0.15);"><span class="big-date-cell">Sa</span></div>
-              </div>
-              <div class="grid grid-cols-7 grid-rows-6">
-                <div class="big-date py-1  " style="background: rgba(90, 163, 255, 0.15);"><span class="big-date-cell">26</span>
-                  <div class="event-list"></div>
-                </div>
-                <div class="big-date py-1  "><span class="big-date-cell">27</span>
-                  <div class="event-list"></div>
-                </div>
-                <div class="big-date py-1  "><span class="big-date-cell">28</span>
-                  <div class="event-list"></div>
-                </div>
-                <div class="big-date py-1  "><span class="big-date-cell">29</span>
-                  <div class="event-list"></div>
-                </div>
-                <div class="big-date py-1  "><span class="big-date-cell">30</span>
-                  <div class="event-list"></div>
-                </div>
-                <div class="big-date py-1  "><span class="big-date-cell">31</span>
-                  <div class="event-list"></div>
-                </div>
-                <div class="big-date py-1 current-month " style="background: rgba(255, 77, 77, 0.15);"><span class="big-date-cell">1</span>
-                  <div class="event-list"></div>
-                </div>
-                <div class="big-date py-1 current-month " style="background: rgba(90, 163, 255, 0.15);"><span class="big-date-cell">2</span>
-                  <div class="event-list"></div>
-                </div>
-                <div class="big-date py-1 current-month "><span class="big-date-cell">3</span>
-                  <div class="event-list"></div>
-                </div>
-                <div class="big-date py-1 current-month "><span class="big-date-cell">4</span>
-                  <div class="event-list"></div>
-                </div>
-                <div class="big-date py-1 current-month "><span class="big-date-cell">5</span>
-                  <div class="event-list">
-                    <div>
-                      <div class="event-name" style="background: rgb(116, 128, 166);">asdf</div>
+            <div id="calendar-view">
+              <div class="mt-5 w-full p-2 rounded-xl big-calendar">
+                <div>
+                  <div class="grid grid-cols-7 day-row">
+                    <div class="big-date" style="background: rgba(90, 163, 255, 0.15);"><span class="big-date-cell">Su</span></div>
+                    <div class="big-date"><span class="big-date-cell">Mo</span></div>
+                    <div class="big-date"><span class="big-date-cell">Tu</span></div>
+                    <div class="big-date"><span class="big-date-cell">We</span></div>
+                    <div class="big-date"><span class="big-date-cell">Th</span></div>
+                    <div class="big-date"><span class="big-date-cell">Fr</span></div>
+                    <div class="big-date" style="background: rgba(255, 77, 77, 0.15);"><span class="big-date-cell">Sa</span></div>
+                  </div>
+                  <div class="grid grid-cols-7 grid-rows-6">
+                    <div class="big-date py-1  " style="background: rgba(90, 163, 255, 0.15);"><span class="big-date-cell">26</span>
+                      <div class="event-list"></div>
+                    </div>
+                    <div class="big-date py-1  "><span class="big-date-cell">27</span>
+                      <div class="event-list"></div>
+                    </div>
+                    <div class="big-date py-1  "><span class="big-date-cell">28</span>
+                      <div class="event-list"></div>
+                    </div>
+                    <div class="big-date py-1  "><span class="big-date-cell">29</span>
+                      <div class="event-list"></div>
+                    </div>
+                    <div class="big-date py-1  "><span class="big-date-cell">30</span>
+                      <div class="event-list"></div>
+                    </div>
+                    <div class="big-date py-1  "><span class="big-date-cell">31</span>
+                      <div class="event-list"></div>
+                    </div>
+                    <div class="big-date py-1 current-month " style="background: rgba(255, 77, 77, 0.15);"><span class="big-date-cell">1</span>
+                      <div class="event-list"></div>
+                    </div>
+                    <div class="big-date py-1 current-month " style="background: rgba(90, 163, 255, 0.15);"><span class="big-date-cell">2</span>
+                      <div class="event-list"></div>
+                    </div>
+                    <div class="big-date py-1 current-month "><span class="big-date-cell">3</span>
+                      <div class="event-list"></div>
+                    </div>
+                    <div class="big-date py-1 current-month "><span class="big-date-cell">4</span>
+                      <div class="event-list"></div>
+                    </div>
+                    <div class="big-date py-1 current-month "><span class="big-date-cell">5</span>
+                      <div class="event-list">
+                        <div>
+                          <div class="event-name" style="background: rgb(116, 128, 166);">asdf</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="big-date py-1 current-month "><span class="big-date-cell">6</span>
+                      <div class="event-list"></div>
+                    </div>
+                    <div class="big-date py-1 current-month "><span class="big-date-cell">7</span>
+                      <div class="event-list"></div>
+                    </div>
+                    <div class="big-date py-1 today " style="background: rgba(255, 77, 77, 0.15);"><span class="big-date-cell">8</span>
+                      <div class="event-list"></div>
+                    </div>
+                    <div class="big-date py-1 current-month " style="background: rgba(90, 163, 255, 0.15);"><span class="big-date-cell">9</span>
+                      <div class="event-list"></div>
+                    </div>
+                    <div class="big-date py-1 current-month "><span class="big-date-cell">10</span>
+                      <div class="event-list"></div>
+                    </div>
+                    <div class="big-date py-1 current-month "><span class="big-date-cell">11</span>
+                      <div class="event-list"></div>
+                    </div>
+                    <div class="big-date py-1 current-month "><span class="big-date-cell">12</span>
+                      <div class="event-list"></div>
+                    </div>
+                    <div class="big-date py-1 current-month "><span class="big-date-cell">13</span>
+                      <div class="event-list"></div>
+                    </div>
+                    <div class="big-date py-1 current-month "><span class="big-date-cell">14</span>
+                      <div class="event-list"></div>
+                    </div>
+                    <div class="big-date py-1 current-month " style="background: rgba(255, 77, 77, 0.15);"><span class="big-date-cell">15</span>
+                      <div class="event-list"></div>
+                    </div>
+                    <div class="big-date py-1 current-month " style="background: rgba(90, 163, 255, 0.15);"><span class="big-date-cell">16</span>
+                      <div class="event-list"></div>
+                    </div>
+                    <div class="big-date py-1 current-month "><span class="big-date-cell">17</span>
+                      <div class="event-list"></div>
+                    </div>
+                    <div class="big-date py-1 current-month "><span class="big-date-cell">18</span>
+                      <div class="event-list"></div>
+                    </div>
+                    <div class="big-date py-1 current-month "><span class="big-date-cell">19</span>
+                      <div class="event-list"></div>
+                    </div>
+                    <div class="big-date py-1 current-month "><span class="big-date-cell">20</span>
+                      <div class="event-list"></div>
+                    </div>
+                    <div class="big-date py-1 current-month "><span class="big-date-cell">21</span>
+                      <div class="event-list"></div>
+                    </div>
+                    <div class="big-date py-1 current-month " style="background: rgba(255, 77, 77, 0.15);"><span class="big-date-cell">22</span>
+                      <div class="event-list"></div>
+                    </div>
+                    <div class="big-date py-1 current-month " style="background: rgba(90, 163, 255, 0.15);"><span class="big-date-cell">23</span>
+                      <div class="event-list"></div>
+                    </div>
+                    <div class="big-date py-1 current-month "><span class="big-date-cell">24</span>
+                      <div class="event-list"></div>
+                    </div>
+                    <div class="big-date py-1 current-month "><span class="big-date-cell">25</span>
+                      <div class="event-list"></div>
+                    </div>
+                    <div class="big-date py-1 current-month "><span class="big-date-cell">26</span>
+                      <div class="event-list"></div>
+                    </div>
+                    <div class="big-date py-1 current-month "><span class="big-date-cell">27</span>
+                      <div class="event-list"></div>
+                    </div>
+                    <div class="big-date py-1 current-month "><span class="big-date-cell">28</span>
+                      <div class="event-list"></div>
+                    </div>
+                    <div class="big-date py-1 current-month " style="background: rgba(255, 77, 77, 0.15);"><span class="big-date-cell">29</span>
+                      <div class="event-list"></div>
+                    </div>
+                    <div class="big-date py-1 current-month " style="background: rgba(90, 163, 255, 0.15);"><span class="big-date-cell">30</span>
+                      <div class="event-list"></div>
+                    </div>
+                    <div class="big-date py-1  "><span class="big-date-cell">1</span>
+                      <div class="event-list"></div>
+                    </div>
+                    <div class="big-date py-1  "><span class="big-date-cell">2</span>
+                      <div class="event-list"></div>
+                    </div>
+                    <div class="big-date py-1  "><span class="big-date-cell">3</span>
+                      <div class="event-list"></div>
+                    </div>
+                    <div class="big-date py-1  "><span class="big-date-cell">4</span>
+                      <div class="event-list"></div>
+                    </div>
+                    <div class="big-date py-1  "><span class="big-date-cell">5</span>
+                      <div class="event-list"></div>
+                    </div>
+                    <div class="big-date py-1  " style="background: rgba(255, 77, 77, 0.15);"><span class="big-date-cell">6</span>
+                      <div class="event-list"></div>
                     </div>
                   </div>
                 </div>
-                <div class="big-date py-1 current-month "><span class="big-date-cell">6</span>
-                  <div class="event-list"></div>
-                </div>
-                <div class="big-date py-1 current-month "><span class="big-date-cell">7</span>
-                  <div class="event-list"></div>
-                </div>
-                <div class="big-date py-1 today " style="background: rgba(255, 77, 77, 0.15);"><span class="big-date-cell">8</span>
-                  <div class="event-list"></div>
-                </div>
-                <div class="big-date py-1 current-month " style="background: rgba(90, 163, 255, 0.15);"><span class="big-date-cell">9</span>
-                  <div class="event-list"></div>
-                </div>
-                <div class="big-date py-1 current-month "><span class="big-date-cell">10</span>
-                  <div class="event-list"></div>
-                </div>
-                <div class="big-date py-1 current-month "><span class="big-date-cell">11</span>
-                  <div class="event-list"></div>
-                </div>
-                <div class="big-date py-1 current-month "><span class="big-date-cell">12</span>
-                  <div class="event-list"></div>
-                </div>
-                <div class="big-date py-1 current-month "><span class="big-date-cell">13</span>
-                  <div class="event-list"></div>
-                </div>
-                <div class="big-date py-1 current-month "><span class="big-date-cell">14</span>
-                  <div class="event-list"></div>
-                </div>
-                <div class="big-date py-1 current-month " style="background: rgba(255, 77, 77, 0.15);"><span class="big-date-cell">15</span>
-                  <div class="event-list"></div>
-                </div>
-                <div class="big-date py-1 current-month " style="background: rgba(90, 163, 255, 0.15);"><span class="big-date-cell">16</span>
-                  <div class="event-list"></div>
-                </div>
-                <div class="big-date py-1 current-month "><span class="big-date-cell">17</span>
-                  <div class="event-list"></div>
-                </div>
-                <div class="big-date py-1 current-month "><span class="big-date-cell">18</span>
-                  <div class="event-list"></div>
-                </div>
-                <div class="big-date py-1 current-month "><span class="big-date-cell">19</span>
-                  <div class="event-list"></div>
-                </div>
-                <div class="big-date py-1 current-month "><span class="big-date-cell">20</span>
-                  <div class="event-list"></div>
-                </div>
-                <div class="big-date py-1 current-month "><span class="big-date-cell">21</span>
-                  <div class="event-list"></div>
-                </div>
-                <div class="big-date py-1 current-month " style="background: rgba(255, 77, 77, 0.15);"><span class="big-date-cell">22</span>
-                  <div class="event-list"></div>
-                </div>
-                <div class="big-date py-1 current-month " style="background: rgba(90, 163, 255, 0.15);"><span class="big-date-cell">23</span>
-                  <div class="event-list"></div>
-                </div>
-                <div class="big-date py-1 current-month "><span class="big-date-cell">24</span>
-                  <div class="event-list"></div>
-                </div>
-                <div class="big-date py-1 current-month "><span class="big-date-cell">25</span>
-                  <div class="event-list"></div>
-                </div>
-                <div class="big-date py-1 current-month "><span class="big-date-cell">26</span>
-                  <div class="event-list"></div>
-                </div>
-                <div class="big-date py-1 current-month "><span class="big-date-cell">27</span>
-                  <div class="event-list"></div>
-                </div>
-                <div class="big-date py-1 current-month "><span class="big-date-cell">28</span>
-                  <div class="event-list"></div>
-                </div>
-                <div class="big-date py-1 current-month " style="background: rgba(255, 77, 77, 0.15);"><span class="big-date-cell">29</span>
-                  <div class="event-list"></div>
-                </div>
-                <div class="big-date py-1 current-month " style="background: rgba(90, 163, 255, 0.15);"><span class="big-date-cell">30</span>
-                  <div class="event-list"></div>
-                </div>
-                <div class="big-date py-1  "><span class="big-date-cell">1</span>
-                  <div class="event-list"></div>
-                </div>
-                <div class="big-date py-1  "><span class="big-date-cell">2</span>
-                  <div class="event-list"></div>
-                </div>
-                <div class="big-date py-1  "><span class="big-date-cell">3</span>
-                  <div class="event-list"></div>
-                </div>
-                <div class="big-date py-1  "><span class="big-date-cell">4</span>
-                  <div class="event-list"></div>
-                </div>
-                <div class="big-date py-1  "><span class="big-date-cell">5</span>
-                  <div class="event-list"></div>
-                </div>
-                <div class="big-date py-1  " style="background: rgba(255, 77, 77, 0.15);"><span class="big-date-cell">6</span>
-                  <div class="event-list"></div>
-                </div>
               </div>
-            </div>
-          </div>
-        </div>;
-        <?php break; ?>
+            </div>;
+            <?php break; ?>
         <?php } ?>
       </div>
     </div>

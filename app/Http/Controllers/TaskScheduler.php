@@ -11,7 +11,7 @@ class TaskScheduler {
 
     public function scheduleTasks($tasks) {
         // Sort tasks by due date and priority
-        usort($tasks, function($a, $b) {
+        usort($tasks, function ($a, $b) {
             if ($a->dueDate == $b->dueDate) {
                 return $a->priority - $b->priority;
             }
@@ -43,7 +43,8 @@ class TaskScheduler {
                 foreach ($this->calendarEntries as $entry) {
                     // Check if the task overlaps with any existing calendar entry
                     if (($taskDueDate >= $entry->startTime && $taskDueDate < $entry->endTime) ||
-                        ($taskDueDate + $taskDuration > $entry->startTime && $taskDueDate + $taskDuration <= $entry->endTime)) {
+                        ($taskDueDate + $taskDuration > $entry->startTime && $taskDueDate + $taskDuration <= $entry->endTime)
+                    ) {
                         $conflict = true;
                         break;
                     }
