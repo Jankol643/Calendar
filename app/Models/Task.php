@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 class Task extends Model {
     protected $fillable = [
@@ -65,4 +66,25 @@ class Task extends Model {
     static function getAllTasks() {
         return Task::all();
     }
+}
+
+function generateTaskJson($taskId) {
+    $task = Task::find($taskId);
+
+    if (!$task) {
+        return response()->json(['error' => 'Task not found'], 404);
+    }
+
+    $json = [
+        'task_id' => $task->id,
+        'task_name' => $task->task_name,
+        'task_descr' => $task->task_descr,
+        // Include other relevant task properties here
+    ];
+
+    $jsonString = json_encode($json, JSON_PRETTY_PRINT);
+
+    Storage::disk('local')->put('task_' . $taskId . '.json', $jsonString);
+
+    return response()->json(['message' => 'JSON file generated successfully']);
 }
