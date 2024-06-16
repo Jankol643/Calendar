@@ -40,4 +40,22 @@ class User extends Authenticatable {
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function __construct() {
+    }
+
+    public function getAuthIdentifierName(): string {
+    }
+
+    public function getAuthIdentifier(): mixed {
+    }
+
+    public function getAuthPassword(): string {
+    }
+
+    public function setRememberToken(string $value): void {
+    }
+
+    public function getRememberTokenName(): string {
+    }
 }

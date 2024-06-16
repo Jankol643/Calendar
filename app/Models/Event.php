@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property bool $all_day
  * @property int $user_id
  */
-class Event extends Model {
+class Event extends CalendarEntry {
     protected $fillable = [
         'id',
         'title',

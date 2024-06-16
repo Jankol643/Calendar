@@ -18,7 +18,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $user_id
  * @property int $attendee_id
  */
-class Appointment extends Model {
+class Appointment extends CalendarEntry {
     protected $fillable = [
         'id',
         'title',
@@ -29,7 +29,6 @@ class Appointment extends Model {
         'location',
         'participants',
         'all_day',
-        'user_id',
-        'attendee_id'
+        'user_id'
     ];
 }

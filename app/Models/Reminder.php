@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property \DateTime $remind_at
  * @property int $user_id
  */
-class Reminder extends Model {
+class Reminder extends CalendarEntry {
     protected $fillable = [
         'id',
         'title',
