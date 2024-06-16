@@ -24,7 +24,10 @@ class Appointment extends Model {
         'title',
         'description',
         'start_date',
-        'end_date',
+        'start_time',
+        'end_time',
+        'location',
+        'participants',
         'all_day',
         'user_id',
         'attendee_id'
