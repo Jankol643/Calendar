@@ -68,3 +68,14 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 });
+
+// Open the add event modal when the button is clicked
+$('.btn-add-event').on('click', function () {
+  $('#add-event-modal').modal('show');
+});
+
+// Handle the form submission to add a new event
+$('#add-event-form').submit(function (event) {
+  event.preventDefault();
+  // Send an AJAX request to store the new event
+});
