@@ -15,4 +15,60 @@ class DateUtil {
         $dateString = $year . '-' . $month . '-' . $day;
         return new DateTime($dateString);
     }
+
+    /**
+     * Adds a specific number of months to a date
+     * @param {Date} date - date to add months to
+     * @param {*} months - number of months to add
+     * @returns Date - date with months added
+     */
+    function addMonths($date, $months) {
+        $day = $date->format('d');
+        $date->modify("+$months months");
+        if ($date->format('d') != $day) {
+            $date->modify('last day of previous month');
+        }
+        return $date;
+    }
+
+    function gaussEaster($Y) {
+        // All calculations done on the basis of Gauss Easter Algorithm
+        $A = $Y % 19;
+        $B = $Y % 4;
+        $C = $Y % 7;
+        $P = floor($Y / 100.0);
+
+        $Q = floor((13 + 8 * $P) / 25.0);
+        $M = floor(15 - $Q + $P - floor($P / 4)) % 30;
+        $N = floor(4 + $P - floor($P / 4)) % 7;
+        $D = floor(19 * $A + $M) % 30;
+        $E = floor(2 * $B + 4 * $C + 6 * $D + $N) % 7;
+
+        $days = floor(22 + $D + $E);
+
+        // A corner case,
+        // when D is 29
+        if (($D == 29) && ($E == 6)) {
+            echo $Y . "-04-19";
+            return;
+        }
+        // Another corner case,
+        // when D is 28
+        else if (($D == 28) && ($E == 6)) {
+            echo $Y . "-04-18";
+            return;
+        } else {
+            // If days > 31, move to April
+            // April = 4th Month
+            if ($days > 31) {
+                echo $Y . "-04-" . ($days - 31);
+                return;
+            } else {
+                // Otherwise, stay on March
+                // March = 3rd Month
+                echo $Y . "-03-" . $days;
+                return;
+            }
+        }
+    }
 }

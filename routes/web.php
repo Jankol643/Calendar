@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -15,11 +16,14 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-Route::get('/calendar', [CalendarController::class, 'index']);
+Route::get('/', [HomeController::class, 'welcome'])->name('welcome');
+Route::get('/calendar', [CalendarController::class, 'calendar'])->name('calendar');
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home', [HomeController::class, 'home'])->name('home');
+Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
+Route::middleware('auth')->group(function () {
+    // Routes that require authentication
+    Route::get('/downloads', [HomeController::class, 'downloads'])->name('downloads');
+});

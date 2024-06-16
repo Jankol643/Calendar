@@ -7,24 +7,16 @@ use Carbon\Carbon;
 
 class Task extends Model {
     protected $fillable = [
-        'recurr',
-        'freq_no',
-        'freq_dur',
-        'last_exec',
-        'startDate',
-        'endDate',
-        'startTime',
-        'endTime',
+        'name',
+        'description',
+        'category',
         'due_date',
-        'task_cat',
-        'task_name',
-        'task_descr',
-        'task_dur',
+        'duration',
         'prio',
     ];
 
     public static function createTask($data) {
-        return self::create([$data]);
+        return self::create($data);
     }
 
     public static function getTask($id) {
@@ -51,14 +43,14 @@ class Task extends Model {
     }
 
     function findBy($searchCriteria, $searchTerm) {
-        return $this::where($searchCriteria, 'ilike', '%' . $searchTerm . '%')->get();
+        return self::where($searchCriteria, $searchTerm)->get();
     }
 
     function listTasksByDate($startDate, $endDate) {
         $startDate = Carbon::createFromFormat('Y-m-d', $startDate)->startOfDay();
         $endDate = Carbon::createFromFormat('Y-m-d', $endDate)->endOfDay();
 
-        $taskList = Task::whereBetween('due_date', [$startDate, $endDate])->get();
+        $taskList = $this->whereBetween('due_date', [$startDate, $endDate])->get();
         return $taskList;
     }
 

@@ -5,10 +5,11 @@ namespace App\Http\Controllers\Helpers;
 class Util {
     /**
      * Checks if a server file exists, is not empty and has the specified extension
-     * @param {string} path - path to the file
-     * @param {string} ext - file extension 
+     * @param {string} $path - path to the file
+     * @param {string} $ext - file extension 
+     * @return bool - true if the file passes all checks, false otherwise
      */
-    function FileOK($path, $ext) {
+    public static function FileOK($path, $ext) {
         // Check if the file exists
         if (!file_exists($path)) {
             return false;
@@ -31,10 +32,10 @@ class Util {
 
     /**
      * Gets the extension of a file from its path
-     * @param {string} path - path to the file
-     * @returns string - file extension
+     * @param {string} $path - path to the file
+     * @return string - file extension
      */
-    static function getExtension($path) {
+    public static function getExtension($path) {
         $basename = basename($path);
         $pos = strrpos($basename, ".");
         if ($basename === "" || $pos === false || $pos === 0) {
@@ -45,12 +46,12 @@ class Util {
 
     /**
      * Checks if an array is null or any of its values are null or NaN
-     * @param {*} arr - array to check
-     * @param {*} from - lower limit to check - 0 if omitted
-     * @param {*} to - upper limit to check - length of array if omitted
-     * @returns bool - true if the array is null or contains null or NaN values
+     * @param {*} $arr - array to check
+     * @param {int} $from - lower limit to check - 0 if omitted
+     * @param {int|null} $to - upper limit to check - length of array if omitted
+     * @return bool - true if the array is null or contains null or NaN values
      */
-    static function isNullOrUndefined($arr, $from = 0, $to = null) {
+    public static function isNullOrUndefined($arr, $from = 0, $to = null) {
         if (!$arr) {
             return true;
         }
@@ -67,10 +68,10 @@ class Util {
 
     /**
      * Checks if a line is complete
-     * @param {string} line - line to check
-     * @returns bool - true if the line is complete
+     * @param {string} $line - line to check
+     * @return bool - true if the line is complete
      */
-    function isLineComplete($line) {
+    public function isLineComplete($line) {
         $splitted = explode(',', $line);
         if (count($splitted) != 8) {
             return false;
@@ -88,20 +89,10 @@ class Util {
     }
 
     /**
-     * Adds a specific number of months to a date
-     * @param {Date} date - date to add months to
-     * @param {*} months - number of months to add
-     * @returns Date - date with months added
+     * Converts an object to an SQL array
+     * @param {object} $obj - object to convert
+     * @return array - SQL array representation of the object
      */
-    function addMonths($date, $months) {
-        $day = $date->format('d');
-        $date->modify("+$months months");
-        if ($date->format('d') != $day) {
-            $date->modify('last day of previous month');
-        }
-        return $date;
-    }
-
     public function toSQLArray($obj) {
         $arr = [];
         $cnt = 0;
@@ -116,6 +107,12 @@ class Util {
         return $arr;
     }
 
+    /**
+     * Inserts a string into an array at every position
+     * @param {string} $str - string to insert
+     * @param {array} $arr - array to insert into
+     * @return array - array with the string inserted at every position
+     */
     public function insertStrIntoArr($str, $arr) {
         $cnt = 0;
         foreach ($arr as $item) {
@@ -125,9 +122,105 @@ class Util {
         return $arr;
     }
 
+    /**
+     * Converts an associative array to a string representation.
+     *
+     * @param array $data The associative array to convert.
+     * @return string The string representation of the array.
+     */
     public static function FormToString($data) {
+        $result = '';
+        foreach ($data as $key => $value) {
+            $result .= $key . '=' . $value . '&';
+        }
+        // Remove the last '&' character
+        $result = rtrim($result, '&');
+        return $result;
     }
 
+    /**
+     * Checks if a form is complete by verifying if all required fields are present.
+     *
+     * @param array $data The associative array representing the form data.
+     * @return bool True if the form is complete, false otherwise.
+     */
     public static function isFormComplete($data) {
+        // Check if all required fields are present
+        foreach ($data as $value) {
+            if (empty($value)) {
+                return false;
+            }
+        }
+        return true;
     }
+
+    /**
+     * Flattens a multi-dimensional array into a single-dimensional array.
+     *
+     * @param array $array The array to flatten.
+     * @return array The flattened array.
+     */
+    public function flatten($array) {
+        if (!is_array($array)) {
+            // nothing to do if it's not an array
+            return array($array);
+        }
+
+        $result = array();
+        foreach ($array as $value) {
+            // explode the sub-array, and add the parts
+            $result = array_merge($result, $this->flatten($value));
+        }
+        return $result;
+    }
+
+    /**
+     * Formats a variable as a string representation.
+     *
+     * @param mixed $var The variable to format.
+     * @return string The string representation of the variable.
+     */
+    public static function format_var($var) {
+        switch (gettype($var)) {
+            case 'array':
+                $formatted = implode(',', $var);
+                break;
+            case 'object':
+                $formatted = self::concatenateObjectMembers($var);
+                break;
+            case 'boolean':
+                $formatted = $var ? 'true' : 'false';
+                break;
+            case 'NULL':
+                $formatted = 'null';
+                break;
+            default:
+                $formatted = (string) $var;
+                break;
+        }
+        return $formatted;
+    }
+
+    /**
+     * Concatenates the members of an object into a string.
+     *
+     * @param object $object The object whose members to concatenate.
+     * @return string The concatenated string representation of the object members.
+     */
+    public static function concatenateObjectMembers($object) {
+        $result = '';
+        foreach ($object as $key => $value) {
+            $result .= "$key: $value, ";
+        }
+        // Remove the trailing comma and space
+        $result = rtrim($result, ', ');
+        return $result;
+    }
+
+    function nullify_variables(...$variables) {
+    foreach ($variables as &$var) {
+        $var = null;
+    }
+    return ...$variables;
+}
 }
