@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class CalendarEntry extends Model {
     protected $table = 'calendar_entries';
@@ -11,16 +13,11 @@ class CalendarEntry extends Model {
         'id',
         'title',
         'description',
+        'category',
         'start_date',
         'end_date',
         'user_id'
-    ]; 
-
-    // Define the common attributes and methods for all submodels
-
-    public function location() {
-        return $this->hasOne(Location::class);
-    }
+    ];
 
     public function user() {
         return $this->belongsTo(User::class);
@@ -30,29 +27,36 @@ class CalendarEntry extends Model {
         return $this->hasOneOrMany(User::class);
     }
 
-    public static function createEntry($data) {
-        return self::create($data);
+    public function create(Request $request) {
+        $data = $request->validate([
+            'title' => 'required',
+            'description' => 'required',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date',
+            'user_id' => 'required|exists:users,id',
+        ]);
+
+        $calendarEntry = CalendarEntry::create($request);
+
+        return response()->json($calendarEntry, 201);
+    }
+    public function index() {
+        $calendarEntries = CalendarEntry::all();
+
+        return response()->json($calendarEntries);
     }
 
-    public static function getEntry($id) {
+    public static function get($id) {
         return self::findOrFail($id);
     }
 
-    public function updateEntry($data) {
-        return $this->update($data);
-    }
-
-    public function deleteEntry() {
-        return $this->delete();
-    }
-
-    function deleteEntryByNameDate($EntryName, $dueDate): bool {
-        $Entry = $this->findBy('name', $EntryName)
+    function deleteCalendarEntryByNameDate($CalendarEntryName, $dueDate): bool {
+        $CalendarEntry = $this->findBy('name', $CalendarEntryName)
             ->where('due_date', $dueDate)
             ->first();
 
-        if ($Entry) {
-            return $Entry->delete();
+        if ($CalendarEntry) {
+            return $CalendarEntry->delete();
         }
         return false;
     }
@@ -61,38 +65,33 @@ class CalendarEntry extends Model {
         return self::where($searchCriteria, $searchTerm)->get();
     }
 
-    function listEntrysByDate($startDate, $endDate) {
+    function listCalendarEntrysByDate($startDate, $endDate) {
         $startDate = Carbon::createFromFormat('Y-m-d', $startDate)->startOfDay();
         $endDate = Carbon::createFromFormat('Y-m-d', $endDate)->endOfDay();
 
-        $EntryList = $this->whereBetween('due_date', [$startDate, $endDate])->get();
-        return $EntryList;
+        $CalendarEntryList = $this->whereBetween('due_date', [$startDate, $endDate])->get();
+        return $CalendarEntryList;
     }
 
-    static function getAllEntrys() {
-        return Entry::all();
-    }
-}
-
-function generateEntryJson($EntryId) {
-    $Entry = Entry::find($EntryId);
-
-    if (!$Entry) {
-        return response()->json(['error' => 'Entry not found'], 404);
+    static function getAllCalendarEntrys() {
+        return self::all();
     }
 
-    $json = [
-        'Entry_id' => $Entry->id,
-        'Entry_name' => $Entry->Entry_name,
-        'Entry_descr' => $Entry->Entry_descr,
-        // Include other relevant Entry properties here
-    ];
 
-    $jsonString = json_encode($json, JSON_PRETTY_PRINT);
+    function generateCalendarEntryJson($CalendarEntryId) {
+        $CalendarEntry = self::find($CalendarEntryId);
 
-    Storage::disk('local')->put('Entry_' . $EntryId . '.json', $jsonString);
+        if (!$CalendarEntry) {
+            return response()->json(['error' => 'CalendarEntry not found'], 404);
+        }
 
-    return response()->json(['message' => 'JSON file generated successfully']);
-}
+        $json = [
+            'CalendarEntry_id' => $CalendarEntry->id,
+            'CalendarEntry_name' => $CalendarEntry->CalendarEntry_name,
+            'CalendarEntry_descr' => $CalendarEntry->CalendarEntry_descr,
+            // Include other relevant CalendarEntry properties here
+        ];
 
+        return json_encode($json, JSON_PRETTY_PRINT);
+    }
 }

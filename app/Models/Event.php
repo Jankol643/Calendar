@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\CalendarEntry;
 
 /**
  * Class Event
@@ -27,4 +28,12 @@ class Event extends CalendarEntry {
         'all_day',
         'user_id'
     ];
+
+    protected $guarded = [
+        'location'
+    ];
+
+    public function location() {
+        return $this->hasOne(Location::class);
+    }
 }

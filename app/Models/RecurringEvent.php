@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property bool $all_day
  * @property int $user_id
  */
-class RecurringEvent extends CalendarEntry {
+class RecurringEvent extends Event {
     protected $fillable = [
         'id',
         'title',
@@ -27,7 +27,10 @@ class RecurringEvent extends CalendarEntry {
         'frequency',
         'start_date',
         'end_date',
-        'all_day',
-        'user_id'
+        'all_day'
+    ];
+
+    protected $guarded = [
+        'location'
     ];
 }

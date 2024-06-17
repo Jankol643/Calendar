@@ -27,7 +27,7 @@ class TaskSeeder extends Seeder {
         $due_date = $faker->dateTimeBetween('now', '+3 months');
         $duration = rand(1, 250);
         $priority = rand(0, 10);
-        $t = Task::createTask([
+        $t = new Task([
             'name' => $name,
             'description' => $description,
             'category' => $category,

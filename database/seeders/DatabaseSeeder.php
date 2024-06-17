@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder {
             NavbarSeeder::class,
             TaskSeeder::class,
             UserSeeder::class,
+            LocationSeeder::class
         ]);
     }
 }

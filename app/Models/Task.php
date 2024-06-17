@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 
-class Task extends CalendarEntry {
+class Task extends Model {
     protected $fillable = [
         'name',
         'description',

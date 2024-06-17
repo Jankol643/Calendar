@@ -19,7 +19,9 @@ class User extends Authenticatable {
     protected $fillable = [
         'name',
         'email',
+        'email_verified_at',
         'password',
+        'remember_token'
     ];
 
     /**
@@ -44,18 +46,15 @@ class User extends Authenticatable {
     public function __construct() {
     }
 
-    public function getAuthIdentifierName(): string {
+    public function getAuthIdentifierName() {
     }
 
-    public function getAuthIdentifier(): mixed {
+    public function getAuthIdentifier() {
     }
 
-    public function getAuthPassword(): string {
+    public function getAuthPassword() {
     }
 
-    public function setRememberToken(string $value): void {
-    }
-
-    public function getRememberTokenName(): string {
+    public function getRememberTokenName() {
     }
 }
