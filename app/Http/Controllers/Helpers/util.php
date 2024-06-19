@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Helpers;
 
+use Exception;
+
 class Util {
     /**
      * Checks if a server file exists, is not empty and has the specified extension
@@ -217,10 +219,25 @@ class Util {
         return $result;
     }
 
-    function nullify_variables(...$variables) {
-    foreach ($variables as &$var) {
-        $var = null;
+    /**
+     * Sets all the variables in the array null and returns them as single variables.
+     *
+     * @param array $arr The array containing the variables to be nullified.
+     * @param string $set The value to set for each variable.
+     *
+     * @return int The number of variables successfully extracted from the array.
+     *
+     * @throws Exception If the extract() function fails to extract any variables.
+     */
+    function nullify_variables(array $arr, string $set) {
+        foreach ($arr as &$var) {
+            $var = $set;
+        }
+        $result = extract($arr);
+
+        if ($result === 0) {
+            throw new Exception('Failed to extract any variables from the array.');
+        }
+        return $result;
     }
-    return ...$variables;
-}
 }

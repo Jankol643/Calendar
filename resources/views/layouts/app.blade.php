@@ -19,13 +19,10 @@
 </head>
 
 <body>
-    <div id="app">
+    <main id="app">
         @include('layouts.menu', ['menus' => \App\Models\Navbar::whereNull('parent_id')->get()])
-
-        <main class="py-4">
-            @yield('content')
-        </main>
-    </div>
+        @yield('content')
+    </main>
 </body>
 
 </html>
