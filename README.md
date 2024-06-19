@@ -1,325 +1,80 @@
-# Calendar
- 
-# Getting started
+# Laravel Event Scheduler
 
-## Installation
-
-Please check the official laravel installation guide for server requirements before you start. [Official Documentation](https://laravel.com/docs/5.4/installation#installation)
-
-Alternative installation is possible without local dependencies relying on [Docker](#docker). 
-
-Clone the repository
-
-    git clone git@github.com:gothinkster/laravel-realworld-example-app.git
-
-Switch to the repo folder
-
-    cd laravel-realworld-example-app
-
-Install all the dependencies using composer
-
-    composer install
-
-Copy the example env file and make the required configuration changes in the .env file
-
-    cp .env.example .env
-
-Generate a new application key
-
-    php artisan key:generate
-
-Generate a new JWT authentication secret key
-
-    php artisan jwt:generate
-
-Run the database migrations (**Set the database connection in .env before migrating**)
-
-    php artisan migrate
-
-Start the local development server
-
-    php artisan serve
-
-You can now access the server at http://localhost:8000
-
-Bootstrap Calendar
-===
-
-A Full view calendar based on Twitter Bootstrap. Please try the [demo](http://bootstrap-calendar.eivissapp.com/).
-
-![Bootstrap full calendar](https://img15.hostingpics.net/pics/187341animatedpreview.gif)
-
-### Why?
-
-Why did I start this project? Well, I believe there are no good full view calendar's out there with native Bootstrap support. In fact I could not find even one. A different UI and UX concept approach is also used.
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](code_of_conduct.md)
 
 
-### Features
+This Laravel application allows users to schedule events automatically in their free time slots on a calendar.
 
-- **Reusable** - there is no UI in this calendar. All buttons to switch view or load events are done separately. You will end up with your own uniquie calendar design.
-- **Template based** - all view like **year**, **month**, **week** or **day** are based on templates. You can easily change how it looks or style it or even add new custom view.
-- **LESS** - easy adjust and style your calendar with less variables file.
-- **AJAX** - It uses AJAX to feed calendar with events. You provide URL and just return by this URL `JSON` list of events.
-- **i18n** - language files are connected separately. You can easily translate the calendar into your own language. Holidays are also diplayed on the calendar according to your language
+## Getting Started
 
-## How to use
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
-### Install
+### Prerequisites
 
-You can install it with [bower](http://bower.io/) package manager.
+Make sure you have the following installed:
 
-	$ bower install bootstrap-calendar
+* PHP 7.3 or higher
+* Composer
+* Laravel 8.x
 
-Bower will automatically install all dependencies. Then by running
+### Installing
 
-	$ bower list --path
+1. Clone and install the repository
 
-You will see list of the files you need to include to your document.
-
-### Quick setup
-You will need to include the bootstrap css and calendar css. Here is the minimum setup.
-```html
-
-	<!DOCTYPE html>
-	<html>
-	<head>
-		<title>Minimum Setup</title>
-		<link rel="stylesheet" href="css/bootstrap.min.css">
-		<link rel="stylesheet" href="css/calendar.css">
-	</head>
-	<body>
-
-		<div id="calendar"></div>
-
-		<script type="text/javascript" src="js/vendor/jquery-1.9.1.js"></script>
-		<script type="text/javascript" src="js/vendor/underscore-min.js"></script>
-		<script type="text/javascript" src="js/calendar.js"></script>
-		<script type="text/javascript">
-			let calendar = $("#calendar").calendar(
-				{
-					tmpl_path: "/tmpls/",
-					events_source: function () { return []; }
-				});			
-		</script>
-	</body>
-	</html>
+```bash
+git clone https://github.com/Jankol643/Calendar.git // clone the repository
+cd laravel-event-scheduler // navigate to the project repository
+composer install // install the dependencies
 ```
 
-Bootstrap Calendar depends on [jQuery](http://jquery.com/) and [underscore.js](http://underscorejs.org/) is used as a template engine.
-For the calendar you only have to include the `calendar.css` and `calendar.js` files.
-If you want to localize your Calendar, it's enough to add this line before including calendar.js:
-```html
-
-	<script type="text/javascript" src="js/language/xx-XX.js"></script>
+2. Configure the database connection in the .env file.
+```bash
+php artisan key:generate //Generate the application key
+php artisan migrate // run the database migrations
+php artisan migrate // run the database migrations and seeders if you want example data
 ```
 
-Where xx-XX is the language code. When you initializing the calendar, you have to specify this language code:
-```html
+3. Start the development server:
+```bash
+php artisan serve
+```
+Now you can access the application in your browser at http://localhost:8000.
 
-	<script type="text/javascript">
-		let calendar = $('#calendar').calendar({language: 'xx-XX'});
-	</script>
+### Running the tests
+
+To run the automated tests for this system, execute the following command:
+```bash
+php artisan test
 ```
 
+## Deployment
 
+To deploy this application on a live system, follow these steps:
 
-## Feed with events
+1. Set up a web server (e.g., Apache, Nginx) and configure it to serve your Laravel application.
+2. Copy the application files to the web server's document root directory.
+3. Configure the web server to use the appropriate PHP version.
+4. Set up the necessary database server and configure the database connection in the .env file.
+5. Generate the application key using the php artisan key:generate command.
+6. Run the database migrations using the php artisan migrate command.
+7. Set up any necessary cron jobs to schedule the event scheduling tasks.
 
-To feed the calendar with events you should use `events_source` parameter. It may be a function, array or URL. In all cases you have to set it with valid events array.
+## Built with
 
-See [events.json.php](https://github.com/Serhioromano/bootstrap-calendar/blob/master/events.json.php) file for more details.
+- Laravel - The web framework used
+- Bootstrap - The front-end framework used for styling
+- FullCalendar - The calendar component used for displaying events
 
-`start` and `end` contain dates when event starts (inclusive) and ends (exclusive) in Unix timestamp. Classes are `event-important`, `event-success`, `event-warning`, `event-info`, `event-inverse` and `event-special`. This wil change the color of your event indicators.
+## Contributing
 
-### Feed URL
+Please read CONTRIBUTING.md for details on our code of conduct, and the process for submitting pull requests to us.
 
-	let calendar = $('#calendar').calendar({events_source: '/api/events.php'});
+## Authors
 
-It will send two parameters by `GET` named `from` and `to`, which will tell you what period is required. You have to return it in JSON structure like this
+- Jankol643 - initial work
 
-	{
-		"success": 1,
-		"result": [
-			{
-				"id": 293,
-				"title": "Event 1",
-				"url": "http://example.com",
-				"class": "event-important",
-				"start": 12039485678000, // Milliseconds
-				"end": 1234576967000 // Milliseconds
-			},
-			...
-		]
-	}
+See also the list of [contributors](https://github.com/Jankol643/Calendar/contributors) who participated in this project.
 
-### Feed array
+## License
 
-You can set events list array directly to `events_source` parameter.
-```js
-
-	let calendar = $('#calendar').calendar({
-	    events_source: [
-            {
-                "id": 293,
-                "title": "Event 1",
-                "url": "http://example.com",
-                "class": "event-important",
-                "start": 12039485678000, // Milliseconds
-                "end": 1234576967000 // Milliseconds
-            },
-            ...
-        ]});
-
-```
-### Feed function
-
-Or you can use function. You have to return array of events.
-
-```js
-
-	let calendar = $('#calendar').calendar({events_source: function(){
-	    return  [
-           {
-               "id": 293,
-               "title": "Event 1",
-               "url": "http://example.com",
-               "class": "event-important",
-               "start": 12039485678000, // Milliseconds
-               "end": 1234576967000 // Milliseconds
-           },
-           ...
-       ];
-	}});
-```
-
-### PHP example
-
-Note that `start` and `end` dates are in milliseconds, thus you need to divide it by 1000 to get seconds. PHP example.
-```php
-
-    $start = date('Y-m-d h:i:s', ($_GET['start'] / 1000));
-```
-
-If you have an error you can return
-```json
-	{
-		"success": 0,
-		"error": "error message here"
-	}
-```
-Here is the example of PHP script.
-
-```php
-<?php
-$db    = new PDO('mysql:host=localhost;dbname=testdb;charset=utf8', 'username', 'password');
-$start = $_REQUEST['from'] / 1000;
-$end   = $_REQUEST['to'] / 1000;
-$sql   = sprintf('SELECT * FROM events WHERE `datetime` BETWEEN %s and %s',
-    $db->quote(date('Y-m-d', $start)), $db->quote(date('Y-m-d', $end)));
-
-$out = array();
-foreach($db->query($sql) as $row) {
-    $out[] = array(
-        'id' => $row->id,
-        'title' => $row->name,
-        'url' => Helper::url($row->id),
-        'start' => strtotime($row->datetime) . '000',
-        'end' => strtotime($row->datetime_end) .'000'
-    );
-}
-
-echo json_encode(array('success' => 1, 'result' => $out));
-exit;
-```
-
-Another example of PHP script (without connecting with the Database).
-
-```php
-<?php
-$out = array();
- 
- for($i=1; $i<=15; $i++){ 	//from day 01 to day 15
-	$data = date('Y-m-d', strtotime("+".$i." days"));
-	$out[] = array(
-     	'id' => $i,
-		'title' => 'Event name '.$i,
-		'url' => Helper::url($id),
-		'class' => 'event-important',
-		'start' => strtotime($data).'000'
-	);
-}
- 
-echo json_encode(array('success' => 1, 'result' => $out));
-exit;
-?>
-```
-
-## Usage warning.
-
-You cannot use the calendar from a local file. 
-The following error will be displayed :
-Failed to load resource: Origin null is not allowed by Access-Control-Allow-Origin. 
-
-Using Ajax with local resources (file:///), is not permited. You will need to deploy this to the web instead.
-
-## Modal popup
-
-You can enable a bootstrap modal popup to show when clicking an event instead of redirecting to event.url. 
-To enable boostrap modal, first add the modal html to your page and provide boostrap-calendar with the ID:
-```html
-
-    <div class="modal hide fade" id="events-modal">
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h3 class="modal-title">Event</h3>
-        </div>
-        <div class="modal-body" style="height: 400px">
-        </div>
-        <div class="modal-footer">
-            <a href="#" data-dismiss="modal" class="btn">Close</a>
-        </div>
-    </div>
-```
-and then set:
-
-	modal: "#events-modal"
-
-This will enable the modal, and populate it with an iframe with the contents of event.url .
-
-For Bootstrap v3, use
-```html
-
-    <div class="modal fade" id="events-modal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h3 class="modal-title">Event</h3>
-                </div>
-                <div class="modal-body" style="height: 400px">
-                </div>
-                <div class="modal-footer">
-                    <a href="#" data-dismiss="modal" class="btn">Close</a>
-                </div>
-            </div>
-        </div>
-    </div>
-```
-### Modal content source
-
-There are three options for populating the contents of the modal, controlled by the `modal_type` option:
-- **iframe** (default) - populates modal with iframe, iframe.src set to event.url
-- **ajax** - gets html from event.url, this is useful when you just have a snippet of html and want to take advantage of styles in the calendar page
-- **template** - will render a template (example in tmpls/modal.html) that gets the `event` and a reference to the `calendar` object.
-
-### Modal title
-
-The modal title can be customized by defining the `modal_title` option as a function. This function will receive the event as its only parameter. For example, this could be used to set the title of the modal to the title of the event:
-
-	modal_title: function(event) { return event.title }
-
-A calendar set up to use modals would look like this:
-
-	$("#calendar").calendar({modal : "#events-modal", modal_type : "ajax", modal_title : function (e) { return e.title }})
-
-
+This project is licensed under the MIT License - see the [License file](https://github.com/Jankol643/Calendar/license) for details.
