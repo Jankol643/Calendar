@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Helpers;
 
 use Exception;
+use Illuminate\Support\Facades\Log;
 
 class Util {
     /**
@@ -157,26 +158,6 @@ class Util {
     }
 
     /**
-     * Flattens a multi-dimensional array into a single-dimensional array.
-     *
-     * @param array $array The array to flatten.
-     * @return array The flattened array.
-     */
-    public function flatten($array) {
-        if (!is_array($array)) {
-            // nothing to do if it's not an array
-            return array($array);
-        }
-
-        $result = array();
-        foreach ($array as $value) {
-            // explode the sub-array, and add the parts
-            $result = array_merge($result, $this->flatten($value));
-        }
-        return $result;
-    }
-
-    /**
      * Formats a variable as a string representation.
      *
      * @param mixed $var The variable to format.
@@ -229,7 +210,7 @@ class Util {
      *
      * @throws Exception If the extract() function fails to extract any variables.
      */
-    function nullify_variables(array $arr, string $set) {
+    function set_array_variables(array $arr, string $set) {
         foreach ($arr as &$var) {
             $var = $set;
         }
@@ -239,5 +220,34 @@ class Util {
             throw new Exception('Failed to extract any variables from the array.');
         }
         return $result;
+    }
+
+    /**
+     * Divides an array into smaller chunks of a specified size.
+     *
+     * @param array $data The array to be divided into chunks.
+     * @param int $chunkSize The size of each chunk.
+     *
+     * @return void This function does not return a value, but it logs each chunk to the debug log.
+     *
+     * @throws Exception If the chunk size is less than or equal to zero.
+     */
+    public static function makeChunks($data, $chunkSize) {
+        // Check if the chunk size is valid
+        if ($chunkSize <= 0) {
+            throw new Exception('Chunk size must be greater than zero.');
+        }
+
+        // Divide the data array into chunks
+        while (!empty($data)) {
+            // Extract a chunk of the specified size from the data array
+            $chunk = array_slice($data, 0, $chunkSize);
+
+            // Log the chunk to the debug log
+            Log::debug("Route array chunk: " . print_r($chunk, true));
+
+            // Remove the chunk from the data array
+            $data = array_slice($data, $chunkSize);
+        }
     }
 }

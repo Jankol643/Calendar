@@ -1,9 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-
-<!-- @include('calendar/add_event_form') -->
-
 <div class="container-fluid">
     <div class="row">
         <!-- Sidebar -->
@@ -42,11 +39,14 @@
         </div>
 
         <!-- Main Content -->
-        <div class="col-md-9">
-            echo '<div id="calendar"></div>';
+        <div class="col-md-9" style="background-color: red;">
+            <div id="calendar"></div>;
         </div>
     </div>
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editTaskModal">
         Edit Task
+    </button>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTaskModal">
+        Add Event
     </button>
 </div>

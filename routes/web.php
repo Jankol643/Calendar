@@ -17,8 +17,7 @@ use Illuminate\Support\Facades\Auth;
 */
 
 Route::get('/', [HomeController::class, 'welcome'])->name('welcome');
-Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar');
-Route::get('/calendar/{event}', 'CalendarController@eventDetail')->name('calendar.event');
+Route::get('/calendar', [HomeController::class, 'index'])->name('calendar');
 Auth::routes();
 
 Route::get('/home', [HomeController::class, 'home'])->name('home');

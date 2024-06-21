@@ -14,6 +14,10 @@ class HomeController extends Controller {
         $this->middleware('auth')->only('downloads');
     }
 
+    public function index() {
+        return view('calendar.index');
+    }
+
     /**
      * Show the welcome page.
      *

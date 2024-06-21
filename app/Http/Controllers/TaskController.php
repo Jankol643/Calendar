@@ -62,13 +62,6 @@ class TaskController {
     }
 
     /**
-     * Saves the task
-     */
-    public function save() {
-        // implementation here
-    }
-
-    /**
      * Adds a task from a form submission
      * @param \Illuminate\Http\Request $request - form data
      * @throws Exception - if task could not be created
