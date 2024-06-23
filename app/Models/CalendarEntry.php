@@ -36,10 +36,18 @@ class CalendarEntry extends Model {
             'user_id' => 'required|exists:users,id',
         ]);
 
-        $calendarEntry = CalendarEntry::create($request);
-
+        $calendarEntry = new CalendarEntry([
+            'title' => $data['title'],
+            'description' => $data['description'],
+            'category' => $data['category'],
+            'start_date' => Carbon::parse($data['start_date']),
+            'end_date' => Carbon::parse($data['end_date']),
+            'user_id' => $data['user_id']
+        ]);
+        $calendarEntry->save();
         return response()->json($calendarEntry, 201);
     }
+
     public function index() {
         $calendarEntries = CalendarEntry::all();
 
@@ -96,22 +104,21 @@ class CalendarEntry extends Model {
     }
 
     /**
- * Sorts a Laravel model by multiple fields with specific orders.
- *
- * @param string $model The fully qualified class name of the model to sort.
- * @param array $fields An array of field names to sort by.
- * @param array $orders An array of sort orders corresponding to each field.
- *                      Possible values: 'asc' for ascending, 'desc' for descending.
- * @return Illuminate\Database\Eloquent\Collection A collection of sorted model instances.
- */
-public function sortModelByMultipleFields($model, $fields, $orders) {
-    $query = $model;
-    
-    for ($i = 0; $i < count($fields); $i++) {
-        $query = $query->orderBy($fields[$i], $orders[$i]);
-    }
-    
-    return $query->get();
-}
+     * Sorts a Laravel model by multiple fields with specific orders.
+     *
+     * @param string $model The fully qualified class name of the model to sort.
+     * @param array $fields An array of field names to sort by.
+     * @param array $orders An array of sort orders corresponding to each field.
+     *                      Possible values: 'asc' for ascending, 'desc' for descending.
+     * @return Illuminate\Database\Eloquent\Collection A collection of sorted model instances.
+     */
+    public function sortModelByMultipleFields(array $fields, array $orders) {
+        $query = CalendarEntry::query();
 
+        for ($i = 0; $i < count($fields); $i++) {
+            $query = $query->CalendarEntry->orderBy($fields[$i], $orders[$i]);
+        }
+
+        return $query->get();
+    }
 }

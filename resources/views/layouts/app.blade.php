@@ -20,7 +20,7 @@
 
 <body>
     <main id="app">
-        @include('layouts.menu', ['menus' => \App\Models\Navbar::whereNull('parent_id')->get()])
+        @include('partials.menu', ['menus' => \App\Http\Controllers\Helpers\MenuHelper::generateNestedMenuArray()])
         @yield('content')
     </main>
 </body>

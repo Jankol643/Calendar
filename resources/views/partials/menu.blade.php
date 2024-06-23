@@ -1,4 +1,4 @@
-<?php $menuArray = App\Http\Controllers\Helpers\Util::generateNestedMenuArray(); ?>
+<?php $menuArray = App\Http\Controllers\Helpers\MenuHelper::generateNestedMenuArray(); ?>
 <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
     <div class="container">
         <a class="navbar-brand" href="{{ url('/') }}">
@@ -9,7 +9,7 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                @foreach ($menuArray as $menu)
+                @foreach ($menuArray as $name => $route)
                 <li class="nav-item">
                     <a class="nav-link" href="{{ $menu['url'] }}">{{ $menu['route'] }}</a>
                     @if (isset($menu['children']) && count($menu['children']) > 0)
