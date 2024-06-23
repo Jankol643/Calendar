@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Helpers;
 
 use Brick\Math\Exception\NegativeNumberException;
+use Exception;
 use Illuminate\Support\Facades\Log;
+use OutOfBoundsException;
 
-class StringHelper {
+class ArrayHelper {
 
     /**
      * Checks if an array is null or any of its values are null or NaN
@@ -35,7 +37,7 @@ class StringHelper {
      * @param {array} $arr - array to insert into
      * @return array - array with the string inserted at every position
      */
-    public function insertStrIntoArr(string $str, array $arr): array {
+    public static function insertStrIntoArr(string $str, array $arr): array {
         $cnt = 0;
         foreach ($arr as $item) {
             array_splice($arr, $cnt, 0, $str);
@@ -109,5 +111,84 @@ class StringHelper {
             // Remove the chunk from the data array
             $data = array_slice($data, $chunkSize);
         }
+    }
+
+    /**
+     * Removes a specified column from a multi-dimensional array.
+     *
+     * @param array $arr The multi-dimensional array from which to remove the column.
+     * @param string $col The name of the column to remove.
+     *
+     * @return array The multi-dimensional array with the specified column removed.
+     *
+     * @throws Exception If the specified column name is not found in the array.
+     */
+    public static function removeArrayColumn(array $arr, $col) {
+        // Check if the column name exists in the array
+        if (is_int($col)) {
+            $keys = array_keys($arr);
+            if (!isset($keys[$col])) {
+                throw new Exception('Column index not found in the array.');
+            }
+            $col = $keys[$col];
+        } else {
+            if (!array_key_exists($col, $arr[0])) {
+                throw new Exception('Column name not found in the array.');
+            }
+        }
+
+        foreach ($arr as &$row) {
+            if (is_array($row)) {
+                // Unset the specified column from the row
+                unset($row[$col]);
+            } else {
+                // If the row is not an associative array, assume it's a numeric array
+                // Unset the specified column index from the row
+                unset($row[$col]);
+            }
+        }
+        return $arr;
+    }
+
+    /**
+     * Converts a multi-dimensional array to a single-dimensional array.
+     *
+     * @param array $arr The multi-dimensional array to convert.
+     * @return array The single-dimensional array.
+     */
+    public static function flattenArray(array $arr): array {
+        return array_reduce($arr, 'array_merge', []);
+    }
+
+    /**
+     * Counts the number of elements in a multi-dimensional array.
+     *
+     * @param array $arr The multi-dimensional array.
+     * @return int The total number of elements in the array.
+     */
+    public static function getArrayLevels(array $array): int {
+        $maxDepth = 1;
+        foreach ($array as $value) {
+            if (is_array($value)) {
+                $depth = self::getArrayLevels($value) + 1;
+                $maxDepth = max($maxDepth, $depth);
+            }
+        }
+        return $maxDepth;
+    }
+
+    /**
+     * Checks if an array contains any true values.
+     *
+     * @param array $arr The array to check.
+     * @return bool True if the array contains any true values, false otherwise.
+     */
+    public static function containsFalseValues(array $arr): bool {
+        foreach ($arr as $value) {
+            if ($value === false) {
+                return true;
+            }
+        }
+        return false;
     }
 }

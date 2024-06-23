@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Helpers;
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Helpers\ArrayHelper;
+use App\Http\Controllers\Helpers\StringHelper;
 use Illuminate\Support\Facades\Log;
 
 class MenuHelper {
@@ -14,12 +16,12 @@ class MenuHelper {
     public static function generateNestedMenuArray() {
         $routes = Route::getRoutes()->getRoutesByName();
         $menuArray = self::excludeMenuItems($routes);
-
-        foreach ($routes as $routeName => $route) {
-            $routeUrl = route($routeName);
-            Log::debug("Route: $routeName, URL: $routeUrl");
+        Log::debug("Cleaned array: " . print_r($menuArray, true));
+        foreach ($menuArray as $routeName => $routeUrl) {
+            $pos = StringHelper::getNthOccurrence($routeUrl, '/', 3);
+            $routeUrl = substr($routeUrl, $pos, strlen($routeUrl) - $pos);
             // Count the number of slashes in the route URL to determine the nesting level
-            $numSlashes = substr_count($routeUrl, '/');
+            $numSlashes = substr_count($routeUrl, '/') - 2; // Subtract 2 to account for the http part
 
             $menu = [
                 'route' => $routeName,
@@ -43,30 +45,28 @@ class MenuHelper {
                 $menuArray[] = $menu;
             }
         }
-
+        Log::debug("Nested menu array: " . print_r($menuArray, true));
         return $menuArray;
     }
 
     /**
      * Excludes menu items based on certain conditions.
      *
-     * @param array $routes The array of routes to be filtered.
+     * @param $routes The array of routes to be filtered.
      * @return array The filtered array of routes.
      */
-    private static function excludeMenuItems($routes) {
-        $excludedCharacters = ['_', '.'];
+    private static function excludeMenuItems($routes): array {
+        $excludedCharacters = ['_', '.', '{', '}'];
         $excludedRoutes = ['admin', 'api', 'login', 'logout'];
         $filteredMenuArray = [];
 
-        Log::debug("Route array: " . print_r($routes, true));
-
-        foreach ($routes as $menuItem) {
+        foreach ($routes as $routeName => $route) {
+            $randomString = StringHelper::generateRandomString(10);
+            $routeUrl = route($routeName, [$randomString]);
             // Check if the route name starts with an excluded character or is in the excluded routes list
-            if (!in_array(substr($menuItem['route'], 0, 1), $excludedCharacters) && !in_array($menuItem['route'], $excludedRoutes)) {
-                $filteredMenuArray[] = $menuItem;
-                if (isset($menuItem['children'])) {
-                    $filteredMenuArray = array_merge($filteredMenuArray, self::excludeMenuItems($menuItem['children']));
-                }
+            if (!StringHelper::checkStringCharacters($routeName, $excludedCharacters) && !StringHelper::checkStringCharacters($routeUrl, $excludedCharacters) && !in_array($routeName, $excludedRoutes)) {
+                $routeUrl = str_replace($randomString, '', $routeUrl); // Remove the random string from route URL
+                $filteredMenuArray[$routeName] = $routeUrl;
             }
         }
         return $filteredMenuArray;

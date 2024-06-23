@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers\Helpers;
 
+use Illuminate\Support\Facades\Request;
+use DateTime;
+use Illuminate\Http\Request as HttpRequest;
+
 class StringHelper {
 
     /**
@@ -60,5 +64,43 @@ class StringHelper {
             $randomString .= $characters[random_int(0, strlen($characters) - 1)];
         }
         return $randomString;
+    }
+
+    /**
+     * Finds the position of the nth occurrence of a character in a string.
+     *
+     * @param string $searchString The string to search in.
+     * @param string $character The character to search for.
+     * @param int $n The occurrence number to find.
+     *
+     * @return int|false The position of the nth occurrence of the character in the string, or false if not found.
+     */
+    public static function getNthOccurrence($searchString, $character, $n) {
+        $occurrences = 0;
+
+        for ($i = 0; $i < strlen($searchString); $i++) {
+            if ($searchString[$i] === $character) {
+                $occurrences++;
+                if ($occurrences === $n) {
+                    return $i;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Converts a request into URL parameters.
+     *
+     * @param array $request The request data.
+     *
+     * @return string The URL parameters.
+     */
+    public static function convertRequestToUrlParameters($request) {
+        // Use http_build_query to convert the request into URL parameters
+        $urlParameters = http_build_query($request);
+
+        // Return the URL parameters
+        return $urlParameters;
     }
 }
