@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 require_once 'Helpers/util.php';
 require_once 'calendar.php';
 
-use App\Http\Controllers\Helpers\Util;
+use App\Http\Controllers\Helpers\ArrayHelper;
+use App\Http\Controllers\Helpers\StringHelper;
 use \Illuminate\Http\Request;
 use App\Models\Task;
 use DateTime;
 use Exception;
+use DateInterval;
 
 class TaskController {
     /**
@@ -47,7 +49,7 @@ class TaskController {
         try {
             $line = is_string($line) ? explode(',', $line) : $line;
 
-            if ($line[0] === 'r' && Util::isNullOrUndefined($line, 4, 8)) {
+            if ($line[0] === 'r' && ArrayHelper::isNullOrUndefined($line, 4, 8)) {
                 return back()->with('error', 'recurring task not completely filled.');
             }
 
@@ -62,23 +64,33 @@ class TaskController {
     }
 
     /**
-     * Adds a task from a form submission
-     * @param \Illuminate\Http\Request $request - form data
-     * @throws Exception - if task could not be created
+     * Creates a new Task object from a request.
+     *
+     * @param Request $request - The request data containing task information.
+     * @return Task - The created Task object.
      */
-    public function addTaskFromForm(Request $request) {
-        $validatedData = $request->validate([
-            'task_no' => 'required',
-            // Add validation rules for other form fields here
-        ]);
-
-        try {
-            $task = $this->createTask(Util::FormToString($request));
-            return view('success')->with('message', 'Task ' . $task->id . ' successfully created');
-        } catch (Exception $exception) {
-            $errorMessage = 'Task ' . $request['task_no'] . ' could not be created.';
-            return back()->with('error', $errorMessage)->withInput();
+    function createTaskFromRequest(Request $request) {
+        $params = $this->validateInput($request);
+        if ($params === false) {
+            return back()->with('error', 'Invalid input data.')->withInput();
         }
+        // Create a new Task object with the sanitized data
+        $task = new Task(
+            $params['id'],
+            $params['recurr'],
+            $params['freq_no'],
+            $params['freq_dur'],
+            $params['last_exec'],
+            $params['due_date'],
+            $params['task_cat'],
+            $params['task_name'],
+            $params['task_descr'],
+            $params['task_dur'],
+            $params['prio']
+        );
+
+        // Return the Task object
+        return $task;
     }
 
     function saveRecurringTask($task) {
@@ -96,8 +108,95 @@ class TaskController {
         /* implementation here */
     }
 
-    function generateTasksUntilFreq($frequency) {
-        /* implementation here */
+    /**
+     * Generates recurring tasks
+     * @param int $freq_no - the frequency number
+     * @param string $freq_dur - the frequency duration (e.g., 'days', 'weeks','months', 'years')
+     * @param DateTime $last_exec - the last execution date
+     */
+    function generateTasksUntilFreq(int $freq_no, string $freq_dur, DateTime $last_exec): void {
+        $interval = new DateInterval($freq_dur);
+        $interval->m = $interval->m * $freq_no; // Adjust month interval based on frequency number
+        $interval->y = $interval->y * $freq_no; // Adjust year interval based on frequency number
+
+        $targetDate = clone $last_exec;
+        $targetDate->add($interval);
+
+        while ($targetDate <= new DateTime()) {
+            $task = new Task([
+                $this->id,
+                true,
+                $freq_no,
+                $this->freq_dur,
+                clone $last_exec,
+                clone $targetDate,
+                $this->task_cat,
+                $this->task_name,
+                $this->task_descr,
+                $this->task_dur,
+                $this->prio
+            ]);
+            $task->save();
+
+            $last_exec->add($interval);
+            $targetDate->add($interval);
+        }
+    }
+
+    /**
+     * Validates the input data for a task creation request.
+     * @param Request $request The request data.
+     * @return array|false The validated and sanitized input data, or false if validation fails.
+     */
+    public static function validateInput(Request $request): array {
+        $validated = [];
+        $validationRules = [
+            'id' => 'required|integer',
+            'recurr' => 'required|boolean',
+            'freq_no' => 'required|integer',
+            'freq_dur' => 'required',
+            'last_exec' => 'required',
+            'due_date' => 'required|date_format:m/d/Y',
+            'task_cat' => 'required',
+            'task_name' => 'required',
+            'task_descr' => 'required',
+            'task_dur' => 'required|integer',
+            'prio' => 'required|integer',
+        ];
+
+        foreach ($validationRules as $field => $rules) {
+            $value = $request->get($field);
+
+            if (strpos($rules, 'required') !== false && empty($value)) {
+                return false; // Return false if any required field is missing
+            }
+
+            if (strpos($rules, 'integer') !== false) {
+                $value = filter_var($value, FILTER_VALIDATE_INT);
+                if ($value === false) {
+                    return false; // Return false if the value is not an integer
+                }
+            }
+
+            if (strpos($rules, 'boolean') !== false) {
+                $value = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+                if ($value === null) {
+                    return false; // Return false if the value is not a boolean
+                }
+            }
+
+            if (strpos($rules, 'date_format:m/d/Y') !== false) {
+                $date = DateTime::createFromFormat('m/d/Y', $value);
+                $dateErrors = DateTime::getLastErrors();
+                if ($dateErrors['warning_count'] + $dateErrors['error_count'] > 0) {
+                    return false; // Return false if the value is not a valid date in the format 'm/d/Y'
+                }
+            }
+
+            $validated[$field] = $value;
+        }
+
+        return $validated;
     }
 
     function writeToCSV($taskList, $path) {
@@ -105,13 +204,13 @@ class TaskController {
         $file = fopen($path, 'w'); // Open the file in write mode
         if ($file) {
             foreach ($taskList as $row) {
-                fwrite($file, $row . "\n"); // Use double quotes to interpret escape sequences like \n
+                fwrite($file, $row . "\n");
             }
             return view('success')->with('message', 'Tasks successfully written to file ' . $path);
         } else {
             return view('error')->with('message', 'File ' . $path . ' is corrupt. Writing to CSV aborted.');
         }
-        fclose($file); // Close the file after writing
+        fclose($file);
     }
 
     function csvToJSON($tasks): string|false {
