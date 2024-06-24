@@ -11,10 +11,10 @@
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 @foreach ($menuArray as $name => $route)
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ $menu['url'] }}">{{ $menu['route'] }}</a>
-                    @if (isset($menu['children']) && count($menu['children']) > 0)
+                    <a class="nav-link" href="{{ $route }}">{{ $name }}</a>
+                    @if (isset($menuArray['children']) && count($menu['children']) > 0)
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        @foreach ($menu['children'] as $child)
+                        @foreach ($menuArray['children'] as $child)
                         <li><a class="dropdown-item" href="{{ $child['url'] }}">{{ $child['name'] }}</a></li>
                         @endforeach
                     </ul>
