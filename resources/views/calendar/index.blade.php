@@ -40,13 +40,14 @@
 
         <!-- Main Content -->
         <div class="col-md-9" style="background-color: red;">
-            <div id="calendar"></div>;
+            <div id="calendar"></div>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editTaskModal">
+                Edit Task
+            </button>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTaskModal">
+                Add Event
+            </button>
         </div>
     </div>
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editTaskModal">
-        Edit Task
-    </button>
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTaskModal">
-        Add Event
-    </button>
 </div>
+@endsection
