@@ -47,4 +47,37 @@ class EventController extends Controller {
         $form .= '</form>';
         return $form;
     }
+
+    function store(Request $request) {
+        $event = new Event();
+        $event->create($request);
+        return response()->json($event, 201);
+    }
+
+    function edit($id) {
+        $event = Event::get($id);
+        return view('calendar.edit_event_form', compact('event'));
+    }
+
+    function update(Request $request, $id) {
+        $event = Event::get($id);
+        $event->update($request->all());
+        return response()->json($event);
+    }
+
+    function delete($id) {
+        $event = Event::get($id);
+        $event->delete();
+        return response()->json(null, 204);
+    }
+
+    function index() {
+        $events = Event::all();
+        return view('calendar.index', compact('events'));
+    }
+
+    function show($id) {
+        $event = Event::findOrFail($id);
+        return response()->json($event);
+    }
 }

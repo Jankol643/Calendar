@@ -58,6 +58,27 @@ class CalendarEntry extends Model {
         return self::findOrFail($id);
     }
 
+    public function updateEntry(Request $request, $id) {
+        $data = $request->validate([
+            'title' => 'required',
+            'description' => 'required',
+            'category' => 'required',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date',
+            'user_id' => 'required|exists:users,id',
+        ]);
+
+        $calendarEntry = self::get($id);
+        $calendarEntry->update([
+            'title' => $data['title'],
+            'description' => $data['description'],
+            'category' => $data['category'],
+            'start_date' => Carbon::parse($data['start_date']),
+            'end_date' => Carbon::parse($data['end_date']),
+            'user_id' => $data['user_id'],
+        ]);
+    }
+
     function deleteCalendarEntryByNameDate($CalendarEntryName, $dueDate): bool {
         $CalendarEntry = $this->findBy('name', $CalendarEntryName)
             ->where('due_date', $dueDate)
@@ -85,28 +106,18 @@ class CalendarEntry extends Model {
         return self::all();
     }
 
-
-    function generateCalendarEntryJson($CalendarEntryId) {
-        $CalendarEntry = self::find($CalendarEntryId);
-
-        if (!$CalendarEntry) {
-            return response()->json(['error' => 'CalendarEntry not found'], 404);
-        }
-
-        $json = [
-            'CalendarEntry_id' => $CalendarEntry->id,
-            'CalendarEntry_name' => $CalendarEntry->CalendarEntry_name,
-            'CalendarEntry_descr' => $CalendarEntry->CalendarEntry_descr,
-            // Include other relevant CalendarEntry properties here
-        ];
-
-        return json_encode($json, JSON_PRETTY_PRINT);
+    /**
+     * Get all calendar entries as JSON format.
+     * @return string A JSON representation of all calendar entries.
+     */
+    function entriesToJSON() {
+        $calendarEntries = CalendarEntry::all();
+        return json_encode($calendarEntries);
     }
 
     /**
      * Sorts a Laravel model by multiple fields with specific orders.
      *
-     * @param string $model The fully qualified class name of the model to sort.
      * @param array $fields An array of field names to sort by.
      * @param array $orders An array of sort orders corresponding to each field.
      *                      Possible values: 'asc' for ascending, 'desc' for descending.
