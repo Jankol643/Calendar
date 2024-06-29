@@ -39,7 +39,7 @@
         </div>
 
         <!-- Main Content -->
-        <div class="col-md-9" style="background-color: red;">
+        <div class="col-md-9">
             <div id="calendar"></div>
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editTaskModal">
                 Edit Task

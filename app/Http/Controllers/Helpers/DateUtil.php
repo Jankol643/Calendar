@@ -31,12 +31,17 @@ class DateUtil {
         return $date;
     }
 
-    function gaussEaster($Y) {
+    /**
+     * Calculates the Easter Sunday date for a given year
+     * @param {number} year - the year for which to calculate the Easter Sunday date
+     * @returns {Date} - the Easter Sunday date for the given year
+     */
+    function gaussEaster(int $year) {
         // All calculations done on the basis of Gauss Easter Algorithm
-        $A = $Y % 19;
-        $B = $Y % 4;
-        $C = $Y % 7;
-        $P = floor($Y / 100.0);
+        $A = $year % 19;
+        $B = $year % 4;
+        $C = $year % 7;
+        $P = floor($year / 100.0);
 
         $Q = floor((13 + 8 * $P) / 25.0);
         $M = floor(15 - $Q + $P - floor($P / 4)) % 30;
@@ -49,24 +54,24 @@ class DateUtil {
         // A corner case,
         // when D is 29
         if (($D == 29) && ($E == 6)) {
-            echo $Y . "-04-19";
+            echo $year . "-04-19";
             return;
         }
         // Another corner case,
         // when D is 28
         else if (($D == 28) && ($E == 6)) {
-            echo $Y . "-04-18";
+            echo $year . "-04-18";
             return;
         } else {
             // If days > 31, move to April
             // April = 4th Month
             if ($days > 31) {
-                echo $Y . "-04-" . ($days - 31);
+                echo $year . "-04-" . ($days - 31);
                 return;
             } else {
                 // Otherwise, stay on March
                 // March = 3rd Month
-                echo $Y . "-03-" . $days;
+                echo $year . "-03-" . $days;
                 return;
             }
         }

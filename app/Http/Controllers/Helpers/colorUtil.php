@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Helpers;
 
+use Exception;
+
 class colorUtil {
     /**
      * Checks the color contrast of two colors
@@ -112,5 +114,78 @@ class colorUtil {
             }
         }
         return 0.2126 * $colVals[0] + 0.7152 * $colVals[1] + 0.0722 * $colVals[2];
+    }
+
+    /**
+     * Calculates the complementary color of a given hex color code.
+     *
+     * @param string $hexCode The original hex color code.
+     * @return string The complementary hex color code.
+     *
+     * @throws Exception If the provided hex color code is not valid.
+     */
+    public function calculateComplementaryColor(string $hexCode): string {
+
+        $rgbColors = $this->hexColorToRGB($hexCode);
+
+        // Calculate the complementary color by subtracting each RGB value from 255
+        $complementaryR = 255 - $rgbColors[0];
+        $complementaryG = 255 - $rgbColors[1];
+        $complementaryB = 255 - $rgbColors[2];
+
+        // Convert the complementary RGB values back to hex color code
+        $complementaryHexCode = sprintf("#%02x%02x%02x", $complementaryR, $complementaryG, $complementaryB);
+
+        return $complementaryHexCode;
+    }
+
+    /**
+     * Reduces the brightness of a given hex color code.
+     *
+     * @param string $hexCode The original hex color code.
+     * @param int $percentage The percentage by which to reduce the brightness.
+     * @return string The reduced hex color code.
+     */
+    function reduceBrightness(string $hexCode, int $percentage): string {
+        $rgbColors = $this->hexColorToRGB($hexCode);
+
+        // Calculate the amount to reduce brightness
+        $percentage = $percentage / 100;
+        $r = intval($rgbColors[0] * (1 - $percentage));
+        $g = intval($rgbColors[1] * (1 - $percentage));
+        $b = intval($rgbColors[2] * (1 - $percentage));
+
+        // Convert the reduced RGB values back to hex code
+        $reducedHexCode = sprintf("#%02x%02x%02x", $r, $g, $b);
+
+        return $reducedHexCode;
+    }
+
+    /**
+     * Converts hexadecimal color to RGB color.
+     *
+     * @param int $red The red component of the RGB color.
+     * @param int $green The green component of the RGB color.
+     * @param int $blue The blue component of the RGB color.
+     * @return array An array containing the RGB color components.
+     */
+    public function hexColorToRGB(string $hexColor): array {
+        $hexColor = str_replace('#', '', $hexColor);
+        $red = hexdec(substr($hexColor, 0, 2));
+        $green = hexdec(substr($hexColor, 2, 2));
+        $blue = hexdec(substr($hexColor, 4, 2));
+        return [$red, $green, $blue];
+    }
+
+    /**
+     * Checks if the provided hex color code is valid.
+     * @param string $hexCode The hex color code to check.
+     * @return bool True if the hex color code is valid, false otherwise.
+     */
+    public function checkColor(string $hexCode): bool {
+        if (strlen($hexCode) !== 6 || !ctype_xdigit($hexCode)) {
+            return false;
+        }
+        return true;
     }
 }

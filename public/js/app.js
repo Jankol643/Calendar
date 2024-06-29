@@ -1,6 +1,3 @@
-import { Calendar } from '@fullcalendar/core';
-import dayGridPlugin from '@fullcalendar/daygrid';
-
 document.addEventListener('DOMContentLoaded', index);
 
 function index() {
@@ -35,37 +32,130 @@ function resetTheme() {
 };
 
 function renderCalendar() {
-  let calendarEl = document.getElementById('calendar');
-  let calendar = new Calendar(calendarEl, {
+  var calendarEl = document.getElementById('calendar');
+
+  var calendar = new FullCalendar.Calendar(calendarEl, {
     timeZone: 'UTC',
-    plugins: [dayGridPlugin],
-    initialView: 'dayGridYear',
+    weekNumbers: true,
+    firstDay: 1, // Monday
+    initialView: 'timeGridWeek',
     headerToolbar: {
-      left: 'prev,next',
+      left: 'prev,next today',
       center: 'title',
-      right: 'dayGridYear,dayGridWeek,dayGridDay'
+      right: 'dayGridMonth,timeGridWeek,timeGridDay'
     },
-    editable: true
+    events: 'https://fullcalendar.io/api/demo-feeds/events.json'
   });
+
   calendar.render();
-};
+}
 
-document.addEventListener('DOMContentLoaded', function () {
-  let checkboxes = document.querySelectorAll('.calendar-checkbox');
+$('#createEvent').submit(function (event) {
 
-  checkboxes.forEach(function (checkbox) {
-    checkbox.addEventListener('change', function () {
-      let calendarId = this.id;
-      let isChecked = this.checked;
+  // stop the form refreshing the page
+  event.preventDefault();
 
-      // Send an AJAX request or perform any other logic based on the checkbox change
-      // Example: Toggle the visibility of the calendar based on the checkbox status
-      if (isChecked) {
-        document.getElementById(calendarId).style.display = 'block';
-      } else {
-        document.getElementById(calendarId).style.display = 'none';
+  $('.form-group').removeClass('has-error'); // remove the error class
+  $('.help-block').remove(); // remove the error text
+
+  // process the form
+  $.ajax({
+    type: "POST",
+    url: url + 'api/insert.php',
+    data: $(this).serialize(),
+    dataType: 'json',
+    encode: true
+  }).done(function (data) {
+
+    // insert worked
+    if (data.success) {
+
+      //remove any form data
+      $('#createEvent').trigger("reset");
+
+      //close model
+      $('#addeventmodal').modal('hide');
+
+      //refresh calendar
+      calendar.refetchEvents();
+
+    } else {
+
+      //if error exists update html
+      if (data.errors.date) {
+        $('#date-group').addClass('has-error');
+        $('#date-group').append('<div class="help-block">' + data.errors.date + '</div>');
       }
-    });
+
+      if (data.errors.title) {
+        $('#title-group').addClass('has-error');
+        $('#title-group').append('<div class="help-block">' + data.errors.title + '</div>');
+      }
+
+    }
+
+  });
+});
+
+$('#editEvent').submit(function (event) {
+
+  // stop the form refreshing the page
+  event.preventDefault();
+
+  $('.form-group').removeClass('has-error'); // remove the error class
+  $('.help-block').remove(); // remove the error text
+
+  //form data
+  var id = $('#editEventId').val();
+  var title = $('#editEventTitle').val();
+  var start = $('#editStartDate').val();
+  var end = $('#editEndDate').val();
+  var color = $('#editColor').val();
+  var textColor = $('#editTextColor').val();
+
+  // process the form
+  $.ajax({
+    type: "POST",
+    url: url + 'api/update.php',
+    data: {
+      id: id,
+      title: title,
+      start: start,
+      end: end,
+      color: color,
+      text_color: textColor
+    },
+    dataType: 'json',
+    encode: true
+  }).done(function (data) {
+
+    // insert worked
+    if (data.success) {
+
+      //remove any form data
+      $('#editEvent').trigger("reset");
+
+      //close model
+      $('#editeventmodal').modal('hide');
+
+      //refresh calendar
+      calendar.refetchEvents();
+
+    } else {
+
+      //if error exists update html
+      if (data.errors.date) {
+        $('#date-group').addClass('has-error');
+        $('#date-group').append('<div class="help-block">' + data.errors.date + '</div>');
+      }
+
+      if (data.errors.title) {
+        $('#title-group').addClass('has-error');
+        $('#title-group').append('<div class="help-block">' + data.errors.title + '</div>');
+      }
+
+    }
+
   });
 });
 
