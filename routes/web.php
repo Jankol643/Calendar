@@ -26,3 +26,7 @@ Route::middleware('auth')->group(function () {
     // Routes that require authentication
     Route::get('/downloads', [HomeController::class, 'downloads'])->name('downloads');
 });
+Route::post('/event/create', [EventController::class, 'store']);
+Route::get('/events/{id}', [EventController::class, 'show']);
+Route::put('/events/{id}', [EventController::class, 'update']);
+Route::delete('/events/{id}', [EventController::class, 'destroy']);

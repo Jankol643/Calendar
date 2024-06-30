@@ -18,7 +18,3 @@ use App\Http\Controllers\EventController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::post('/events', [EventController::class, 'store']);
-Route::get('/events/{id}', [EventController::class, 'show']);
-Route::put('/events/{id}', [EventController::class, 'update']);
-Route::delete('/events/{id}', [EventController::class, 'destroy']);
