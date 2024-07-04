@@ -41,12 +41,17 @@
         <!-- Main Content -->
         <div class="col-md-9">
             <div id="calendar"></div>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editTaskModal">
-                Edit Task
-            </button>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTaskModal">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add-event-modal">
                 Add Event
             </button>
+            @include('calendar.add_event_form')
+            @if (count($errors) > 0)
+            <script type="text/javascript">
+                $(document).ready(function() {
+                    $('#add-event-modal').modal('show');
+                });
+            </script>
+            @endif
         </div>
     </div>
 </div>
