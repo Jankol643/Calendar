@@ -16,7 +16,9 @@ class CalendarEntry extends Model {
         'category',
         'start_date',
         'end_date',
-        'user_id'
+        'user_id',
+        'created_at',
+        'updated_at'
     ];
 
     public function user() {
