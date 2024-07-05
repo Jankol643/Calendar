@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Models\CalendarEntry;
-use Carbon\Exceptions\InvalidFormatException;
+use Carbon\Exceptions\InvalidDateException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use DateTime;
@@ -51,6 +51,7 @@ class Event extends CalendarEntry {
      * @return \Illuminate\Http\JsonResponse The created Event as a JSON response with a HTTP 201 status code.
      *
      * @throws \Illuminate\Validation\ValidationException If the incoming request data fails validation.
+     * @throws \Carbon\Exceptions\InvalidDateException If the start_time or end_time format is invalid.
      */
     public function create(Request $request) {
         $validated = $request->validate([
@@ -65,31 +66,40 @@ class Event extends CalendarEntry {
         $event = new Event();
         $event->title = $validated['title'];
         $event->description = $validated['description'];
-        $start_date = DateTime::createFromFormat('Y-m-d', $validated['start_date']);
-        $end_date = DateTime::createFromFormat('Y-m-d', $validated['start_date']);
-        // Convert the start_time and end_time to DateTime objects
-        $start_time = DateTime::createFromFormat('H:i', $validated['start_time']);
-        $end_time = DateTime::createFromFormat('H:i', $validated['end_time']);
 
-        // Check if the conversion was successful
-        if ($start_date !== false && $end_date !== false && $start_time !== false && $end_time !== false) {
-            // Assign the DateTime objects to the start_date and end_date variables
-            $event->start_date = $start_date;
-            $event->end_date = $end_date;
-            // Now you can use the setTime() method on the DateTime objects
-            $event->start_date->setTime($start_time->format('H'), $start_time->format('i'));
-            $event->end_date->setTime($end_time->format('H'), $end_time->format('i'));
-        } else {
-            throw new InvalidFormatException('Invalid start_time or end_time format');
+        $dateFormat = 'Y-m-d';
+        $timeFormat = 'H:i';
+
+        $start_date = DateTime::createFromFormat($dateFormat, $validated['start_date']);
+        $end_date = DateTime::createFromFormat($dateFormat, $validated['end_date']);
+
+        $start_time = DateTime::createFromFormat($timeFormat, $validated['start_time']);
+        $end_time = DateTime::createFromFormat($timeFormat, $validated['end_time']);
+
+        if ($start_date === false || $end_date === false || $start_time === false || $end_time === false || isset($request->all_day)) {
+            throw new InvalidDateException('start_date and end_date', gf);
         }
-        if ($request->all_day === 'on' || $request->all_day === '1') {
+
+        try {
+            Carbon::createSafe(2000, 1, 35, 13, 0, 0);
+        } catch (\Carbon\Exceptions\InvalidDateException $exp) {
+            echo $exp->getMessage();
+        }
+
+        $event->start_date = $start_date;
+        $event->end_date = $end_date;
+
+        $event->start_date->setTime($start_time->format('H'), $start_time->format('i'));
+        $event->end_date->setTime($end_time->format('H'), $end_time->format('i'));
+
+        if (isset($request->all_day)) {
             $event->all_day = true;
         } else {
             $event->all_day = false;
         }
+
         $event->user_id = 1;
         $event->save();
-        Log::debug(print_r($event, true));
 
         return response()->json($event, 201);
     }
