@@ -178,10 +178,10 @@ class ArrayHelper {
     }
 
     /**
-     * Checks if an array contains any true values.
+     * Checks if an array contains any false values.
      *
      * @param array $arr The array to check.
-     * @return bool True if the array contains any true values, false otherwise.
+     * @return bool True if the array contains any false values, false otherwise.
      */
     public static function containsFalseValues(array $arr): bool {
         foreach ($arr as $value) {
@@ -190,5 +190,47 @@ class ArrayHelper {
             }
         }
         return false;
+    }
+
+    /**
+     * Merges two arrays recursively. If a key exists in both arrays and the values are arrays,
+     * the function will merge them recursively. If a key exists in both arrays but the values are not arrays,
+     * the function will keep the value from the first array.
+     *
+     * @param array $data1 The first array to merge.
+     * @param array $data2 The second array to merge.
+     *
+     * @return array The merged array.
+     */
+    public function mergeArrays(array $data1, array $data2): array {
+        $merged = [];
+
+        // Iterate over the first array
+        foreach ($data1 as $key => $value) {
+            // If the key exists in the second array
+            if (array_key_exists($key, $data2)) {
+                // If both values are arrays, merge them recursively
+                if (is_array($value) && is_array($data2[$key])) {
+                    $merged[$key] = $this->mergeArrays($value, $data2[$key]);
+                } else {
+                    // If not arrays, keep the value from the first array
+                    $merged[$key] = $value;
+                }
+            } else {
+                // If the key does not exist in the second array, keep the value from the first array
+                $merged[$key] = $value;
+            }
+        }
+
+        // Iterate over the second array
+        foreach ($data2 as $key => $value) {
+            // If the key does not exist in the merged array, add it from the second array
+            if (!array_key_exists($key, $merged)) {
+                $merged[$key] = $value;
+            }
+        }
+
+        // Return the merged array
+        return $merged;
     }
 }
