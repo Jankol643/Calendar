@@ -16,7 +16,7 @@
                         </ul>
                     </div>
                     @endif
-                    <form id="add-event-form" class="form-horizontal" method="POST" action="/event/create">
+                    <form id="add-event-form" class="form-horizontal" method="POST" action="{{url('events/create')}}">
                         @csrf
                         <div class="row">
                             <div class="col-md-6">
