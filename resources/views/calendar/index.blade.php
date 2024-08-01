@@ -40,7 +40,7 @@
 
         <!-- Main Content -->
         <div class="col-md-9">
-            <div id="calendar"></div>
+            <div id="calendar"></div><br />
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add-event-modal">
                 Add Event
             </button>
@@ -52,6 +52,10 @@
                 });
             </script>
             @endif
+
+            <h1>Event list</h1>
+            <br />
+            @include('calendar.entry_list', ['events' => $events])
         </div>
     </div>
 </div>
