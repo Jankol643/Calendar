@@ -18,15 +18,17 @@ use Illuminate\Support\Facades\Auth;
 
 Route::get('/', [HomeController::class, 'welcome'])->name('welcome');
 Route::get('/calendar', [HomeController::class, 'index'])->name('calendar');
-Auth::routes();
+Auth::routes(['register' => false]); // Disable registration
 
-Route::get('/home', [HomeController::class, 'home'])->name('home');
-Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
-Route::middleware('auth')->group(function () {
-    // Routes that require authentication
+Route::group(['middleware' => 'auth'], function () {
+    Route::get('/home', [HomeController::class, 'home'])->name('home');
+    Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
     Route::get('/downloads', [HomeController::class, 'downloads'])->name('downloads');
 });
-Route::post('/event/create', [EventController::class, 'store']);
-Route::get('/events/{id}', [EventController::class, 'show']);
-Route::put('/events/{id}', [EventController::class, 'update']);
-Route::delete('/events/{id}', [EventController::class, 'destroy']);
+
+Route::group(['prefix' => 'events'], function () {
+    Route::post('/create', [EventController::class, 'store'])->name('events.create');
+    Route::get('/{id}', [EventController::class, 'show'])->name('events.show');
+    Route::put('/{id}', [EventController::class, 'edit'])->name('events.edit');
+    Route::delete('/{id}', [EventController::class, 'delete'])->name('events.delete');
+});
