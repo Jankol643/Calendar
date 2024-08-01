@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Schema;
 
 class EventController extends Controller {
     /**
-     * This function generates an HTML form for creating or updating an event.
+     * This function generates a HTML form for creating or updating an event.
      *
      * @param string $action The action attribute of the form. Default is '/add-event'.
      * @param string $method The method attribute of the form. Default is 'POST'.
@@ -51,29 +51,17 @@ class EventController extends Controller {
     function store(Request $request) {
         $event = new Event();
         $event->create($request);
-        return response()->json($event, 201);
+        return redirect('calendar')->with('success', 'Event created successfully!');
     }
 
     function edit($id) {
         $event = Event::get($id);
-        return view('calendar.edit_event_form', compact('event'));
-    }
-
-    function update(Request $request, $id) {
-        $event = Event::get($id);
-        $event->update($request->all());
-        return response()->json($event);
+        return view('calendar.edit_event', compact('event'));
     }
 
     function delete($id) {
         $event = Event::get($id);
-        $event->delete();
-        return response()->json(null, 204);
-    }
-
-    function index() {
-        $events = Event::all();
-        return view('calendar.index', compact('events'));
+        return view('calendar.delete_event_confirmation', compact('event'));
     }
 
     function show($id) {
