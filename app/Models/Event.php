@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Models\CalendarEntry;
-use Carbon\Exceptions\InvalidDateException;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use DateTime;
@@ -73,29 +73,18 @@ class Event extends CalendarEntry {
         $start_date = DateTime::createFromFormat($dateFormat, $validated['start_date']);
         $end_date = DateTime::createFromFormat($dateFormat, $validated['end_date']);
 
-        $start_time = DateTime::createFromFormat($timeFormat, $validated['start_time']);
-        $end_time = DateTime::createFromFormat($timeFormat, $validated['end_time']);
-
-        if ($start_date === false || $end_date === false || $start_time === false || $end_time === false || isset($request->all_day)) {
-            throw new InvalidDateException('start_date and end_date', gf);
-        }
-
-        try {
-            Carbon::createSafe(2000, 1, 35, 13, 0, 0);
-        } catch (\Carbon\Exceptions\InvalidDateException $exp) {
-            echo $exp->getMessage();
-        }
-
         $event->start_date = $start_date;
         $event->end_date = $end_date;
 
-        $event->start_date->setTime($start_time->format('H'), $start_time->format('i'));
-        $event->end_date->setTime($end_time->format('H'), $end_time->format('i'));
+        $start_time = DateTime::createFromFormat($timeFormat, $validated['start_time']);
+        $end_time = DateTime::createFromFormat($timeFormat, $validated['end_time']);
 
-        if (isset($request->all_day)) {
-            $event->all_day = true;
-        } else {
+        if (!isset($request->all_day)) {
+            $event->start_date->setTime($start_time->format('H'), $start_time->format('i'));
+            $event->end_date->setTime($end_time->format('H'), $end_time->format('i'));
             $event->all_day = false;
+        } else {
+            $event->all_day = true;
         }
 
         $event->user_id = 1;
@@ -104,7 +93,60 @@ class Event extends CalendarEntry {
         return response()->json($event, 201);
     }
 
+    /**
+     * Update an existing Event in the database.
+     *
+     * @param Request $request The incoming request containing the necessary data for updating an existing Event.
+     * @param int $id The ID of the Event to update.
+     * @return \Illuminate\Http\JsonResponse The updated Event as a JSON response with a HTTP 200 status code.
+     *
+     * @throws \Illuminate\Validation\ValidationException If the incoming request data fails validation.
+     * @throws \Carbon\Exceptions\InvalidDateException If the start_time or end_time format is invalid.
+     */
+    public function updateEvent(Request $request, $id) {
+        $event = Event::find($id);
+
+        if (!$event) {
+            return response()->json(['error' => 'Event not found'], 404);
+        }
+
+        $validated = $request->validate([
+            'title' => 'required',
+            'description' => 'required',
+            'start_date' => 'required|date|before_or_equal:end_date',
+            'start_time' => 'required',
+            'end_date' => 'required|date',
+            'end_time' => 'required'
+        ]);
+
+        $event->update([
+            'title' => $validated['title'],
+            'description' => $validated['description'],
+            'category' => $validated['category'],
+            'start_date' => Carbon::parse($validated['start_date']),
+            'end_date' => Carbon::parse($validated['end_date']),
+            'user_id' => $validated['user_id'],
+        ]);
+    }
+
+    public static function get_by_user($user_id) {
+        return self::where('user_id', $user_id)->get();
+    }
+
     public static function get_all() {
         return self::all();
+    }
+
+    public function getEvents() {
+        $events = Event::all()->map(function ($event) {
+            return [
+                'title' => $event->title,
+                'start' => $event->start_date->format('Y-m-d\TH:i:s'),
+                'end' => $event->end_date->format('Y-m-d\TH:i:s'),
+                'allDay' => $event->all_day,
+            ];
+        });
+
+        return response()->json($events);
     }
 }
