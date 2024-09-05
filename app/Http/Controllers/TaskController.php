@@ -227,4 +227,55 @@ class TaskController {
         }
         return json_encode($jsonData, JSON_PRETTY_PRINT);
     }
+
+    // Display a listing of the resource
+    public function index() {
+        $tasks = Task::all();
+        return response()->json($tasks);
+    }
+
+    // Show the form for creating a new resource
+    public function create() {
+        // Return a view to create a new task (if using views)
+    }
+
+    function store(Request $request) {
+        $task = new Task();
+        $task->create($request);
+        return redirect('calendar')->with('success', 'Task created successfully!');
+    }
+
+    // Display the specified resource
+    public function show($id) {
+        $task = Task::findOrFail($id);
+        return response()->json($task);
+    }
+
+    // Show the form for editing the specified resource
+    public function edit($id) {
+        // Return a view to edit the task (if using views)
+    }
+
+    // Update the specified resource in storage
+    public function update(Request $request, $id) {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'category' => 'nullable|string',
+            'due_date' => 'nullable|date',
+            'duration' => 'nullable|integer',
+            'prio' => 'nullable|integer',
+        ]);
+
+        $task = Task::findOrFail($id);
+        $task->update($request->all());
+        return response()->json($task);
+    }
+
+    // Remove the specified resource from storage
+    public function destroy($id) {
+        $task = Task::findOrFail($id);
+        $task->delete();
+        return response()->json(null, 204);
+    }
 }
