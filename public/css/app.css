@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --color-1: #ff165d;
+  --color-2: #ff9a00;
+  --color-3: #f6f7d7;
+  --color-4: #3ec1d3;
+}
+
 #calendar {
     max-height: 80vh;
 }

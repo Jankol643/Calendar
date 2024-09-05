@@ -12,23 +12,13 @@ function index() {
   }
   renderCalendar();
 
-  let openAddEventModalBtn = document.getElementById('open-addevent-modal');
-  let addEventModal = new bootstrap.Modal(document.getElementById('add-event-modal'));
+  initEventDelete();
+  initTaskModal();
+  initDeleteTaskModal();
+  initEventModal();
+}
 
-  if (openAddEventModalBtn) {
-    openAddEventModalBtn.addEventListener('click', function () {
-      addEventModal.show();
-    });
-  }
-
-  let closeAddEventModalBtn = document.getElementById('close-addevent-modal');
-
-  if (closeAddEventModalBtn) {
-    closeAddEventModalBtn.addEventListener('click', function () {
-      addEventModal.hide();
-    });
-  }
-
+function initEventDelete() {
   let deleteEventModal = document.getElementById('deleteEventModal');
   deleteEventModal.addEventListener('show.bs.modal', function (event) {
     var button = $(event.relatedTarget); // Button that triggered the modal
@@ -39,11 +29,66 @@ function index() {
     modal.find('#eventId').text('Event ID: ' + eventId); // Update the event ID in the modal
     modal.find('#eventTitle').text('Event Title: ' + eventTitle); // Update the event title in the modal
 
-    // Update the form action with the event ID
-    var form = modal.find('form');
-    var deleteUrl = form.attr('action');
-    deleteUrl = deleteUrl.replace(':event', eventId);
-    form.attr('action', deleteUrl);
+
+    // Update the form action URL
+    const form = document.getElementById('deleteEventForm');
+    form.action = `/events/delete/${eventId}`;
+  });
+}
+
+function initTaskModal() {
+  let openTaskModalBtn = document.getElementById('openTaskModalBtn');
+
+  if (openTaskModalBtn) {
+    openTaskModalBtn.addEventListener('click', function () {
+      // Fetch the form HTML from the PHP file
+      fetch('/task/add_task_form')
+        .then(response => response.text())
+        .then(html => {
+          // Create a temporary container for the HTML
+          const tempDiv = document.createElement('div');
+          tempDiv.innerHTML = html;
+
+          // Append the modal to the body
+          document.body.appendChild(tempDiv);
+
+          var addTaskModal = new bootstrap.Modal(document.getElementById('addTaskModal'));
+          addTaskModal.show();
+
+          // Add event listener to the close button
+          document.getElementById('closeAddTaskForm').onclick = function () {
+            document.body.removeChild(tempDiv); // Remove the modal from the DOM
+          };
+
+          // Handle form submission
+          document.getElementById('addTaskForm').onsubmit = function (event) {
+            event.preventDefault(); // Prevent default form submission
+            // Here you can handle the form data as needed
+            alert('Task added: ' + document.getElementById('taskName').value);
+            document.body.removeChild(tempDiv); // Remove the modal from the DOM
+          };
+        })
+        .catch(error => console.error('Error fetching the form:', error));
+    });
+  }
+}
+
+function initDeleteTaskModal() {
+  let deleteTaskModal = document.getElementById('deleteTaskModal');
+  deleteTaskModal.addEventListener('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget); // Button that triggered the modal
+    var taskId = button.data('task-id'); // Extract task ID from data attribute
+    var eventTitle = button.closest('tr').find('td:eq(1)').text(); // Extract task title from table row
+
+    var modal = $(this);
+    modal.find('#taskId').text('Task ID: ' + taskId); // Update the task ID in the modal
+    modal.find('#taskTitle').text('Task Title: ' + taskTitle); // Update the task title in the modal
+
+
+
+    // Update the form action URL
+    const form = document.getElementById('deleteTaskForm');
+    form.action = `/tasks/delete/${taskId}`;
   });
 }
 
@@ -69,7 +114,7 @@ function renderCalendar() {
   let calendarEl = document.getElementById('calendar');
   if (!calendarEl) {
     console.error("Calendar element not found!");
-    return; // Exit the function if the element is not found
+    return;
   }
 
   let calendar = new FullCalendar.Calendar(calendarEl, {
@@ -87,3 +132,38 @@ function renderCalendar() {
 
   calendar.render();
 }
+
+function initEventModal() {
+  document.getElementById('openEventModalBtn').onclick = function () {
+    // Fetch the form HTML from the PHP file
+    fetch('/calendar/add_event_form')
+      .then(response => response.text())
+      .then(html => {
+        // Create a temporary container for the HTML
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = html;
+
+        // Append the modal to the body
+        document.body.appendChild(tempDiv);
+
+        var modal = new bootstrap.Modal(document.getElementById('addEventModal'));
+        modal.show();
+
+        // Add event listener to the close button
+        document.getElementById('closeAddEventForm').onclick = function () {
+          document.body.removeChild(tempDiv); // Remove the modal from the DOM
+        };
+
+        // Handle form submission
+        document.getElementById('addEventForm').onsubmit = function (event) {
+          event.preventDefault(); // Prevent default form submission
+
+          // Here you can handle the form data as needed
+          alert('Event added: ' + document.getElementById('eventName').value);
+          document.body.removeChild(tempDiv); // Remove the modal from the DOM
+        };
+      })
+      .catch(error => console.error('Error fetching the form:', error));
+  };
+}
+

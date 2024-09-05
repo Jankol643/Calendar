@@ -112,3 +112,19 @@
     left: 45px;
 }
 
+#dynamicFormContainer {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border: 1px solid #ccc;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: none; /* Hidden by default */
+}
+
+#addEventForm {
+    position: relative; /* Ensure the z-index works */
+    z-index: 999; /* Set a high z-index */
+}
