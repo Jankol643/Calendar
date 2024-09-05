@@ -18,9 +18,9 @@
             <th scope="row">{{ $event->id }}</th>
             <td>{{ $event->title }}</td>
             <td>{{ $event->description }}</td>
-            <td>{{ $event->start_date }}</td>
-            <td>{{ $event->end_date }}</td>
-            <td>{{ $event->all_day }}</td>
+            <td>{{ \Carbon\Carbon::parse($event->start_date)->format('Y-m-d H:i') }}</td>
+            <td>{{ \Carbon\Carbon::parse($event->end_date)->format('Y-m-d H:i') }}</td>
+            <td>{{ $event->all_day ? 'Yes' : 'No' }}</td>
             <td>{{ $event->user_id }}</td>
             <td>
                 <button data-bs-toggle="modal" data-bs-target="#addEventModal" data-event-id="{{ $event->id }}" data-event-title="{{ $event->title }}">
@@ -29,7 +29,6 @@
                 <button data-bs-toggle="modal" data-bs-target="#editEventModal" data-event-id="{{ $event->id }}" data-event-title="{{ $event->title }}">
                     <i class="bi bi-pencil"></i>
                 </button>
-
                 <a href="{{ route('events.edit', $event->id) }}"></a>
                 <button data-bs-toggle="modal" data-bs-target="#deleteEventModal" data-event-id="{{ $event->id }}" data-event-title="{{ $event->title }}">
                     <i class="bi bi-trash"></i>
