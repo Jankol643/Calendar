@@ -4,6 +4,7 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\TaskController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,7 +29,22 @@ Route::group(['middleware' => 'auth'], function () {
 
 Route::group(['prefix' => 'events'], function () {
     Route::post('/create', [EventController::class, 'store'])->name('events.create');
-    Route::get('/{id}', [EventController::class, 'show'])->name('events.show');
-    Route::put('/{id}', [EventController::class, 'edit'])->name('events.edit');
-    Route::delete('/{id}', [EventController::class, 'delete'])->name('events.delete');
+    Route::get('/view/{id}', [EventController::class, 'show'])->name('events.show');
+    Route::put('/edit/{id}', [EventController::class, 'edit'])->name('events.edit');
+    Route::delete('/delete/{id}', [EventController::class, 'delete'])->name('events.delete');
+});
+
+Route::group(['prefix' => 'tasks'], function () {
+    Route::post('/create', [TaskController::class, 'store'])->name('task.create');
+    Route::get('/view/{id}', [TaskController::class, 'show'])->name('task.show');
+    Route::put('/edit/{id}', [TaskController::class, 'edit'])->name('task.edit');
+    Route::delete('/delete/{id}', [TaskController::class, 'delete'])->name('task.delete');
+});
+
+Route::get('/calendar/add_event_form', function () {
+    return view('calendar.add_event_form');
+});
+
+Route::get('/calendar/add_task_form', function () {
+    return view('task.add_task_form');
 });
