@@ -11,7 +11,7 @@
                 <span id="eventTitle"></span>
             </div>
             <div class="modal-footer">
-                <form id="deleteEventForm" method="POST">
+                <form id="deleteEventForm" method="POST" action="">
                     @csrf
                     @method('DELETE')
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
