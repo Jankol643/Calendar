@@ -41,10 +41,14 @@
         <!-- Main Content -->
         <div class="col-md-9">
             <div id="calendar"></div><br />
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add-event-modal">
+            <button type="button" class="btn btn-primary" id="openEventModalBtn">
                 Add Event
             </button>
-            @include('calendar.add_event_form')
+            <div id="dynamicFormContainer"></div>
+
+            <button type="button" class="btn btn-primary" id="openTaskModalBtn">
+                Add Task
+            </button>
             @if (count($errors) > 0)
             <script type="text/javascript">
                 $(document).ready(function() {
@@ -56,6 +60,10 @@
             <h1>Event list</h1>
             <br />
             @include('calendar.entry_list', ['events' => $events])
+
+            <h1>Task list</h1>
+            <br />
+            @include('task.task_list', ['tasks' => $tasks])
         </div>
     </div>
 </div>
