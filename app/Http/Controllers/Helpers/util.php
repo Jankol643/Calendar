@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Helpers;
 
 use App\Http\Controllers\Helpers\ArrayHelper;
+use DOMDocument;
 
 class Util {
     /**
@@ -90,33 +91,6 @@ class Util {
     }
 
     /**
-     * Formats a variable as a string representation.
-     *
-     * @param mixed $var The variable to format.
-     * @return string The string representation of the variable.
-     */
-    public static function format_var($var) {
-        switch (gettype($var)) {
-            case 'array':
-                $formatted = implode(',', $var);
-                break;
-            case 'object':
-                $formatted = self::concatenateObjectMembers($var);
-                break;
-            case 'boolean':
-                $formatted = $var ? 'true' : 'false';
-                break;
-            case 'NULL':
-                $formatted = 'null';
-                break;
-            default:
-                $formatted = (string) $var;
-                break;
-        }
-        return $formatted;
-    }
-
-    /**
      * Concatenates the members of an object into a string.
      *
      * @param object $object The object whose members to concatenate.
@@ -130,5 +104,37 @@ class Util {
         // Remove the trailing comma and space
         $result = rtrim($result, ', ');
         return $result;
+    }
+
+    function generateJSFromHTML($htmlString) {
+        $dom = new DOMDocument();
+        @$dom->loadHTML($htmlString);
+        $jsCode = '';
+
+        function traverse($node) {
+            global $jsCode;
+            if ($node->nodeType === XML_ELEMENT_NODE) {
+                $tagName = strtolower($node->nodeName);
+                $jsCode .= "const {$tagName}Element = document.createElement('{$tagName}');\n";
+
+                // Set attributes
+                foreach ($node->attributes as $attr) {
+                    $jsCode .= " {$tagName}Element.setAttribute('{$attr->nodeName}', '{$attr->nodeValue}');\n";
+                }
+
+                // Append children
+                foreach ($node->childNodes as $child) {
+                    traverse($child);
+                    if ($child->nodeType === XML_ELEMENT_NODE) {
+                        $jsCode .= " {$tagName}Element.appendChild({$child->nodeName});\n";
+                    } elseif ($child->nodeType === XML_TEXT_NODE) {
+                        $jsCode .= " {$tagName}Element.appendChild(document.createTextNode('{$child->nodeValue}'));\n";
+                    }
+                }
+            }
+        }
+
+        traverse($dom->documentElement);
+        return $jsCode;
     }
 }
