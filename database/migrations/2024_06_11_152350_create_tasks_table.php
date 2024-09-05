@@ -10,7 +10,6 @@ class CreateTasksTable extends Migration {
             $table->id();
             $table->string('name');
             $table->string('description');
-            $table->string('category');
             $table->dateTime('due_date');
             $table->integer('duration');
             $table->integer('priority');
