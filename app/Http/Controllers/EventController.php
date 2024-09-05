@@ -3,69 +3,75 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 class EventController extends Controller {
-    /**
-     * This function generates a HTML form for creating or updating an event.
-     *
-     * @param string $action The action attribute of the form. Default is '/add-event'.
-     * @param string $method The method attribute of the form. Default is 'POST'.
-     * @return string The generated HTML form.
-     */
-    function buildEventForm($action = '/add-event', $method = 'POST') {
-        $form = '<form action="' . $action . '" method="' . $method . '">';
-        $fillable = (new Event())->getFillable();
-        $columns = Schema::getColumnListing('events');
-
-        foreach ($fillable as $fillableColumn) {
-            if (in_array($fillableColumn, $columns)) {
-                $field = '<div class="mb-3">';
-                $field .= '<label for="' . $fillableColumn . '" class="form-label">' . ucfirst($fillableColumn) . '</label>';
-
-                $columnType = Schema::getColumnType('events', $fillableColumn);
-
-                if ($fillableColumn == 'event_description') {
-                    $field .= '<textarea class="form-control" id="' . $fillableColumn . '" name="' . $fillableColumn . '" rows="3"></textarea>';
-                } else {
-                    $inputType = 'text';
-                    if ($columnType == 'date') {
-                        $inputType = 'date';
-                    } elseif ($columnType == 'time') {
-                        $inputType = 'time';
-                    }
-
-                    $field .= '<input type="' . $inputType . '" class="form-control" id="' . $fillableColumn . '" name="' . $fillableColumn . '" ' . ($fillableColumn == 'event_name' || $fillableColumn == 'event_description' ? 'required' : '') . '>';
-                }
-
-                $field .= '</div>';
-                $form .= $field;
-            }
+    function store(Request $request): JsonResponse {
+        $request = $this->parseRequest($request);
+        DB::beginTransaction();
+        try {
+            $event = Event::create($request->all());
+            DB::commit();
+            return response()->json($event, 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json("saving event failed: " . $e->getMessage(), 420);
         }
-
-        $form .= '</form>';
-        return $form;
     }
 
-    function store(Request $request) {
-        $event = new Event();
-        $event->create($request);
-        return redirect('calendar')->with('success', 'Event created successfully!');
+    public function delete(int $id): JsonResponse {
+        $event = Event::where('id', $id)->first();
+        if ($event != null) {
+            $event->delete();
+            return response()->json('event (' . $id . ', ' . $event->title . ') successfully deleted', 200);
+        } else {
+            return response()->json('event could not be deleted - it does not exist', 422);
+        }
     }
 
-    function edit($id) {
-        $event = Event::get($id);
-        return view('calendar.edit_event', compact('event'));
+    public function parseRequest(Request $request): Request {
+        return $request;
     }
 
-    function delete($id) {
-        $event = Event::get($id);
-        return view('calendar.delete_event_confirmation', compact('event'));
+    function getFullCalendarEvents() {
+        return Event::toFullCalendarFormat();
     }
 
-    function show($id) {
-        $event = Event::findOrFail($id);
-        return response()->json($event);
+    function update(Request $request, $id): JsonResponse {
+        DB::beginTransaction();
+        try {
+            $event = Event::where('id', $id)->first();
+            if ($event != null) {
+                $event->update($request->all());
+                $event->save();
+            }
+            DB::commit();
+            $event1 = Event::where('id', $id)->first();
+            return response()->json($event1, 201);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json("updating event failed: " . $e->getMessage(), 420);
+        }
+    }
+
+    public function findById(int $id) {
+        $event = Event::where('id', $id)->first();
+        return $event != null ? response()->json($event, 200) : response()->json(null, 200);
+    }
+
+    function searchEvents(Request $request) {
+        $query = $request->get('query');
+        $events = Event::where('event_name', 'LIKE', '%' . $query . '%')->get();
+        return response()->json($events);
+    }
+
+    function getEvents($includeTimestamps = false) {
+        $query = Event::query();
+        if ($includeTimestamps) {
+            $query->addSelect('created_at', 'updated_at');
+        }
+        return $query->get();
     }
 }
