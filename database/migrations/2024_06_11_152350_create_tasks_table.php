@@ -13,7 +13,10 @@ class CreateTasksTable extends Migration {
             $table->dateTime('due_date');
             $table->integer('duration');
             $table->integer('priority');
+            $table->unsignedBigInteger('user_id');
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
