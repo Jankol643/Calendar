@@ -15,6 +15,12 @@
                     @endif
 
                     <?php echo __('You are logged in') ?>
+                    <a href="#" onclick="document.getElementById('logout-form').submit();">Logout</a>
+
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                        @csrf
+                    </form>
+
                 </div>
             </div>
         </div>

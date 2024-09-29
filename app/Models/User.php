@@ -45,16 +45,4 @@ class User extends Authenticatable {
 
     public function __construct() {
     }
-
-    public function getAuthIdentifierName() {
-    }
-
-    public function getAuthIdentifier() {
-    }
-
-    public function getAuthPassword() {
-    }
-
-    public function getRememberTokenName() {
-    }
 }
