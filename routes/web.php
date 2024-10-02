@@ -2,9 +2,11 @@
 
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\CalendarController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\TaskController;
+use App\Models\Calendar;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,27 +20,13 @@ use App\Http\Controllers\TaskController;
 */
 
 Route::get('/', [HomeController::class, 'welcome'])->name('welcome');
-Route::get('/calendar', [HomeController::class, 'index'])->name('calendar');
-Auth::routes(['register' => false]); // Disable registration
+Auth::routes();
 
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/home', [HomeController::class, 'home'])->name('home');
     Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
     Route::get('/downloads', [HomeController::class, 'downloads'])->name('downloads');
-});
-
-Route::group(['prefix' => 'events'], function () {
-    Route::post('/create', [EventController::class, 'store'])->name('events.create');
-    Route::get('/view/{id}', [EventController::class, 'show'])->name('events.show');
-    Route::put('/edit/{id}', [EventController::class, 'edit'])->name('events.edit');
-    Route::delete('/delete/{id}', [EventController::class, 'delete'])->name('events.delete');
-});
-
-Route::group(['prefix' => 'tasks'], function () {
-    Route::post('/create', [TaskController::class, 'store'])->name('task.create');
-    Route::get('/view/{id}', [TaskController::class, 'show'])->name('task.show');
-    Route::put('/edit/{id}', [TaskController::class, 'edit'])->name('task.edit');
-    Route::delete('/delete/{id}', [TaskController::class, 'delete'])->name('task.delete');
+    Route::get('/calendar', [HomeController::class, 'index'])->name('calendar');
 });
 
 Route::get('/calendar/add_event_form', function () {
@@ -47,4 +35,11 @@ Route::get('/calendar/add_event_form', function () {
 
 Route::get('/calendar/add_task_form', function () {
     return view('task.add_task_form');
+});
+
+Route::get('/calendars', [CalendarController::class, 'index'])->name('calendars.index');
+Route::get('/calendars/{id}/items', [CalendarController::class, 'showCalendarItems'])->name('calendars.items');
+Route::get('/add-event-form', function () {
+    $calendars = Calendar::where('user_id', Auth::id())->get(); // Fetch calendars
+    return view('components.add-event-form', ['calendars' => $calendars]);
 });
