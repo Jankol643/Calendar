@@ -134,36 +134,25 @@ function renderCalendar() {
 }
 
 function initEventModal() {
-  document.getElementById('openEventModalBtn').onclick = function () {
-    // Fetch the form HTML from the PHP file
-    fetch('/calendar/add_event_form')
+  document.getElementById('openAddEventModalBtn').addEventListener('click', function () {
+    // Fetch the calendars from the server
+    fetch('/calendars')
+      .then(response => response.json())
+      .then(calendars => {
+        // Create a request to get the form HTML
+        return fetch('/add-event-form');
+      })
       .then(response => response.text())
       .then(html => {
-        // Create a temporary container for the HTML
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = html;
+        // Populate the modal body with the form HTML
+        document.getElementById('dynamicFormContainer').innerHTML = html;
 
-        // Append the modal to the body
-        document.body.appendChild(tempDiv);
-
-        var modal = new bootstrap.Modal(document.getElementById('addEventModal'));
+        // Show the modal using Bootstrap's modal method
+        var modalElement = document.getElementById('addEventModal');
+        var modal = new bootstrap.Modal(modalElement);
         modal.show();
-
-        // Add event listener to the close button
-        document.getElementById('closeAddEventForm').onclick = function () {
-          document.body.removeChild(tempDiv); // Remove the modal from the DOM
-        };
-
-        // Handle form submission
-        document.getElementById('addEventForm').onsubmit = function (event) {
-          event.preventDefault(); // Prevent default form submission
-
-          // Here you can handle the form data as needed
-          alert('Event added: ' + document.getElementById('eventName').value);
-          document.body.removeChild(tempDiv); // Remove the modal from the DOM
-        };
       })
       .catch(error => console.error('Error fetching the form:', error));
-  };
+  });
 }
 
