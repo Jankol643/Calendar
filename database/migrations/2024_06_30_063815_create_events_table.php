@@ -18,10 +18,8 @@ return new class extends Migration {
             $table->dateTime('start_date');
             $table->dateTime('end_date');
             $table->boolean('all_day')->default(false);
-            $table->unsignedBigInteger('user_id');
+            $table->foreignId('calendar_id')->constrained()->onDelete('cascade');
             $table->timestamps();
-
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use App\Models\Calendar;
 use App\Models\Event;
 
 class EventSeeder extends Seeder {
@@ -12,7 +13,16 @@ class EventSeeder extends Seeder {
      * @return void
      */
     public function run() {
-        $this->createRandomEvents(10);
+        $calendar = Calendar::where('title', 'Birthdays')->first();
+
+        Event::create([
+            'title' => 'John\'s Birthday',
+            'description' => 'Celebrate John\'s birthday with a party.',
+            'start_date' => '2024-10-01 00:00:00',
+            'end_date' => '2024-10-01 23:59:59',
+            'all_day' => true,
+            'calendar_id' => $calendar->id,
+        ]);
     }
 
     /**

@@ -2,45 +2,53 @@
 
 namespace Database\Seeders;
 
+use Illuminate\Database\Seeder;
+use App\Models\User;
+use App\Models\Calendar;
 use App\Models\Task;
 use App\Models\Category;
-use Illuminate\Database\Seeder;
-use Faker\Factory as Faker;
 
 class TaskSeeder extends Seeder {
     public function run() {
-        $faker = Faker::create();
+        $user = User::first();
+        $calendar = Calendar::first();
 
-        // Fetch all categories and their subcategories
-        $categories = Category::with('children')->get();
+        $tasks = [
+            [
+                'name' => 'Buy a gift',
+                'description' => 'Purchase a gift for John\'s birthday.',
+                'due_date' => '2024-09-30',
+                'duration' => 2,
+                'priority' => 1,
+                'categories' => ['Gifts', 'Shopping'],
+                'calendar_id' => $calendar->id
+            ],
+            [
+                'name' => 'Order cake',
+                'description' => 'Order a birthday cake for John.',
+                'due_date' => '2024-09-28',
+                'duration' => 1,
+                'priority' => 2,
+                'categories' => ['Food', 'Events'],
+                'calendar_id' => $calendar->id
+            ]
+        ];
 
-        for ($i = 0; $i < 10; $i++) {
-            $name = $faker->regexify('[A-Za-z0-9]{20}');
-            $description = $faker->regexify('[A-Za-z0-9]{50}');
-            // Generate random due date
-            $due_date = $faker->dateTimeBetween('now', '+3 months');
-            $duration = rand(1, 250);
-            $priority = rand(0, 10);
-
-            // Select a random category
-            $category = $categories->random();
-            // Select a random subcategory from the selected category
-            $subcategory = $category->children->random();
-
-            // Create a new Task instance
-            $task = new Task([
-                'name' => $name,
-                'description' => $description,
-                'due_date' => $due_date,
-                'duration' => $duration,
-                'prio' => $priority,
+        foreach ($tasks as $taskData) {
+            $task = Task::create([
+                'name' => $taskData['name'],
+                'description' => $taskData['description'],
+                'due_date' => $taskData['due_date'],
+                'duration' => $taskData['duration'],
+                'priority' => $taskData['priority'],
+                'calendar_id' => $taskData['calendar_id']
             ]);
-            $task->save();
 
-            // Attach the category and subcategory to the task
-            $task->categories()->attach($category->id);
-            if ($subcategory) {
-                $task->categories()->attach($subcategory->id);
+            if (!empty($taskData['categories'])) {
+                foreach ($taskData['categories'] as $categoryName) {
+                    $category = Category::firstOrCreate(['name' => $categoryName]);
+                    $task->categories()->attach($category->id);
+                }
             }
         }
     }
