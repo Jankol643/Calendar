@@ -2,35 +2,74 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Event;
+use App\Models\Calendar;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CalendarController extends Controller {
+    // Display a listing of the user's calendars
+    public function index() {
+        $calendars = Calendar::where('user_id', Auth::id())->get();
+        return response()->json($calendars);
+    }
 
-    public function buildCalendar() {
-        $start_date = '2022-01-26';
-        $end_date = '2022-02-06';
+    // Store a newly created calendar
+    public function store(Request $request) {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+        ]);
 
-        $current_date = $start_date;
-        $calendar_html = '';
-        while ($current_date <= $end_date) {
-            $day_of_week = date('D', strtotime($current_date));
-            $day_number = date('j', strtotime($current_date));
+        $calendar = Calendar::create([
+            'user_id' => $request->user_id,
+        ]);
 
-            $event_class = '';
-            $event_content = '';
+        return response()->json($calendar, 201);
+    }
 
-            // Add event logic here
-            // Example:
-            // if ($day_number == 15) {
-            //     $event_class = 'current-month';
-            //     $event_content = '<div class="event-list"><div class="event-name" style="background: rgb(116, 128, 166);">asdf</div></div>';
-            // }
+    // Display the specified calendar
+    public function show($id) {
+        $calendar = Calendar::findOrFail($id);
+        return response()->json($calendar);
+    }
 
-            $calendar_html += '<div class="big-date py-1 ' . $event_class . ' ' . ($day_of_week == 'Sun' ? 'bg-red-100' : ($day_of_week == 'Sat' ? 'bg-blue-100' : '')) . '"><span class="big-date-cell">' . $day_number . '</span>' . $event_content . '</div>';
+    // Update the specified calendar
+    public function update(Request $request, $id) {
+        $calendar = Calendar::findOrFail($id);
 
-            $current_date = date('Y-m-d', strtotime($current_date . ' + 1 day'));
+        $request->validate([
+            'user_id' => 'sometimes|required|exists:users,id',
+        ]);
+
+        $calendar->update($request->only('user_id'));
+
+        return response()->json($calendar);
+    }
+
+    // Remove the specified calendar
+    public function destroy($id) {
+        $calendar = Calendar::findOrFail($id);
+        $calendar->delete();
+
+        return response()->json(null, 204);
+    }
+
+    // Display the events and tasks for a specific calendar
+    public function showCalendarItems($id) {
+        $calendar = Calendar::findOrFail($id);
+
+        // Ensure the calendar belongs to the logged-in user
+        if ($calendar->user_id !== Auth::id()) {
+            return response()->json(['error' => 'Unauthorized'], 403);
         }
-        return $calendar_html;
+
+        // Retrieve events and tasks associated with the calendar
+        $events = $calendar->events; // Assuming a relationship exists
+        $tasks = $calendar->tasks; // Assuming a relationship exists
+
+        return response()->json([
+            'calendar' => $calendar,
+            'events' => $events,
+            'tasks' => $tasks,
+        ]);
     }
 }

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Event;
 use App\Models\Task;
+use App\Models\Calendar;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller {
     /**
@@ -16,14 +18,16 @@ class HomeController extends Controller {
     }
 
     public function index() {
+        // Retrieve the calendars of the currently logged-in user
+        $calendars = Calendar::where('user_id', Auth::id())->get();
+
         // Retrieve all events and tasks
         $events = Event::all();
         $tasks = Task::all();
 
         // Pass the collections to the view
-        return view('calendar.index', compact('events', 'tasks'));
+        return view('calendar.index', compact('calendars', 'events', 'tasks'));
     }
-
 
     /**
      * Show the welcome page.
