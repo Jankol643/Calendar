@@ -26,13 +26,20 @@
                 <button data-bs-toggle="modal" data-bs-target="#addEventModal" data-event-id="{{ $event->id }}" data-event-title="{{ $event->title }}">
                     <i class="bi bi-eye"></i>
                 </button>
-                <button data-bs-toggle="modal" data-bs-target="#editEventModal" data-event-id="{{ $event->id }}" data-event-title="{{ $event->title }}">
-                    <i class="bi bi-pencil"></i>
-                </button>
-                <a href="{{ route('events.edit', $event->id) }}"></a>
-                <button data-bs-toggle="modal" data-bs-target="#deleteEventModal" data-event-id="{{ $event->id }}" data-event-title="{{ $event->title }}">
-                    <i class="bi bi-trash"></i>
-                </button>
+                <form action="{{ route('events.update', $event->id) }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <button type="submit">
+                        <i class="bi bi-pencil"></i>
+                    </button>
+                </form>
+                <form action="{{ route('events.destroy', $event->id) }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </form>
             </td>
         </tr>
         @endforeach
