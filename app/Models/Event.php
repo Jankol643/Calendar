@@ -31,7 +31,7 @@ class Event extends Model {
         'start_date',
         'end_date',
         'all_day',
-        'user_id',
+        'calendar_id',
         'created_at',
         'updated_at'
     ];
@@ -42,6 +42,10 @@ class Event extends Model {
 
     public function location() {
         return $this->hasOne(Location::class);
+    }
+
+    public function calendar() {
+        return $this->belongsTo(Calendar::class);
     }
 
     public static function get_by_user($user_id) {

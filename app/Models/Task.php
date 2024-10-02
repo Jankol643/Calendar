@@ -13,41 +13,38 @@ class Task extends Model {
         'due_date',
         'duration',
         'prio',
+        'calendar_id'
     ];
+
+    public function calendar() {
+        return $this->belongsTo(Calendar::class);
+    }
 
     public function categories() {
         return $this->belongsToMany(Category::class, 'task_category_rel');
     }
 
-    public function create(Request $request) {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'categories' => 'nullable|array', // Allow multiple categories
-            'categories.*' => 'string', // Each category should be a string
-            'due_date' => 'nullable|date',
-            'duration' => 'nullable|integer',
-            'prio' => 'nullable|integer',
-        ]);
-
+    public function createTask($name, $description = null, $due_date = null, $duration = null, $prio = null, $categories = [], $calendar_id = 1) {
         // Create a new Task instance
         $task = new Task();
-        $task->name = $validated['name'];
-        $task->description = $validated['description'];
-        $task->due_date = $validated['due_date'];
-        $task->duration = $validated['duration'];
-        $task->prio = $validated['prio'];
+        $task->name = $name;
+        $task->description = $description;
+        $task->due_date = $due_date;
+        $task->duration = $duration;
+        $task->prio = $prio;
+        $task->calendar_id = $calendar_id;
 
-        if (!empty($validated['categories'])) {
-            foreach ($validated['categories'] as $categoryName) {
+        // Save the task
+        $task->save();
+
+        // Handle categories if provided
+        if (!empty($categories)) {
+            foreach ($categories as $categoryName) {
                 $category = Category::firstOrCreate(['name' => $categoryName]);
                 $task->categories()->attach($category->id);
             }
         }
 
-        $task->user_id = 1; // Assuming a user ID is set here
-        $task->save();
-
-        return response()->json($task, 201);
+        return $task; // Return the created task
     }
 }
