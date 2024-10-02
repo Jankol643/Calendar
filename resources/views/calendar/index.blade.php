@@ -8,31 +8,14 @@
             <!-- Calendar Selector -->
             <div id="calendar-selector">
                 <div class="layout">
-                    <h1>Custom Radio & Checkbox Input</h1>
-                    <div class="list-btn">
-                        <label class="radio-btn">
-                            <input type="radio" checked>
-                            <span></span>
-                            Radio Input
-                        </label>
-
+                    <h1>Calendar Selector</h1>
+                    <div class="calendar-checkboxes">
+                        @foreach($calendars as $calendar)
                         <label class="checkbox-btn">
-                            <input type="checkbox" checked>
-                            <span></span>
-                            Checkbox Input
+                            <input type="checkbox" class="calendar-checkbox" data-id="{{ $calendar->id }}" checked>
+                            <span class="color-circle" style="<?php echo 'background-color: ' . $calendar->color . ';'; ?>"></span> {{ $calendar->title }}
                         </label>
-
-                        <label class="switch-btn">
-                            <input type="checkbox" checked>
-                            <span></span>
-                            Switch Button
-                        </label>
-
-                    </div>
-                    <div class="switch">
-                        <input class="switch__input" type="checkbox" id="themeSwitch">
-                        <label aria-hidden="true" class="switch__label" for="themeSwitch">On</label>
-                        <div aria-hidden="true" class="switch__marker"></div>
+                        @endforeach
                     </div>
                 </div>
             </div>
@@ -41,12 +24,12 @@
         <!-- Main Content -->
         <div class="col-md-9">
             <div id="calendar"></div><br />
-            <button type="button" class="btn btn-primary" id="openEventModalBtn">
+            <button type="button" class="btn btn-primary" id="openAddEventModalBtn">
                 Add Event
             </button>
             <div id="dynamicFormContainer"></div>
 
-            <button type="button" class="btn btn-primary" id="openTaskModalBtn">
+            <button type="button" class="btn btn-primary" id="openAddTaskModalBtn">
                 Add Task
             </button>
             @if (count($errors) > 0)
@@ -67,4 +50,32 @@
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function() {
+        $('.calendar-checkbox').change(function() {
+            var calendarId = $(this).data('id');
+            if ($(this).is(':checked')) {
+                // Fetch events and tasks for the selected calendar
+                $.ajax({
+                    url: '/calendars/' + calendarId + '/items',
+                    method: 'GET',
+                    success: function(data) {
+                        // Update the event and task lists based on the response
+                        // You can use data.events and data.tasks to update your lists
+                        console.log(data);
+                        // Example: Update the event list
+                        $('#dynamicFormContainer').html(data.events.map(event => `<div>${event.name}</div>`).join(''));
+                    },
+                    error: function(xhr) {
+                        console.error(xhr.responseText);
+                    }
+                });
+            } else {
+                // Handle unchecking the calendar if needed
+                // You might want to clear the events/tasks from the display
+            }
+        });
+    });
+</script>
 @endsection
