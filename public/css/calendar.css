@@ -128,3 +128,11 @@
     position: relative; /* Ensure the z-index works */
     z-index: 999; /* Set a high z-index */
 }
+
+.color-circle {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%; /* Makes it a circle */
+    margin-right: 8px; /* Space between circle and text */
+}
