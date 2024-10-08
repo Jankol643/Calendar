@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,4 +43,11 @@ Route::group(['prefix' => 'tasks'], function () {
     Route::get('/{id}', [TaskController::class, 'show'])->name('tasks.show');
     Route::put('/{id}', [TaskController::class, 'update'])->name('tasks.update');
     Route::delete('/{id}', [TaskController::class, 'destroy'])->name('tasks.destroy');
+});
+
+Route::group(['prefix' => 'auth'], function () {
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/refresh', [AuthController::class, 'refresh']);
+    Route::post('/register', [AuthController::class, 'register']);
 });
